@@ -1,23 +1,51 @@
-;; 行番号の表示
-(global-linum-mode t)
+;; this enables this running method
+;;   emacs -q -l ~/.debug.emacs.d/{{pkg}}/init.el
+(eval-and-compile
+  (when (or load-file-name byte-compile-current-file)
+    (setq user-emacs-directory
+          (expand-file-name
+           (file-name-directory (or load-file-name byte-compile-current-file))))))
 
-;; シンタックスハイライトの強化
-(global-font-lock-mode t)
+(eval-and-compile
+  (customize-set-variable
+   'package-archives '(("org"   . "https://orgmode.org/elpa/")
+                       ("melpa" . "https://melpa.org/packages/")
+                       ("gnu"   . "https://elpa.gnu.org/packages/")))
+  (package-initialize)
+  (unless (package-installed-p 'leaf)
+    (package-refresh-contents)
+    (package-install 'leaf))
 
-;; バックアップファイルを作成しない
-(setq make-backup-files nil)
+  (leaf leaf-keywords
+    :ensure t
+    :init
+    ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
+    (leaf hydra :ensure t)
+    (leaf el-get :ensure t)
+    (leaf blackout :ensure t)
 
-;; 自動保存ファイルを作成しない
-(setq auto-save-default nil)
+    :config
+    ;; initialize leaf-keywords.el
+    (leaf-keywords-init)))
 
-;; スタートアップメッセージを非表示
-(setq inhibit-startup-message t)
+;; ここにいっぱい設定を書く
 
-;; カーソルの点滅を止める
-(blink-cursor-mode 0)
+(provide 'init)
 
-;; タブにスペースを使用
-(setq-default indent-tabs-mode nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages '(blackout el-get hydra leaf-keywords leaf)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 
-;; タブ幅
-(setq-default tab-width 4)
+;;; init.el ends here
