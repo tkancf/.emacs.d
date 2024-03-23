@@ -29,6 +29,26 @@
     (leaf-keywords-init)))
 
 ;; ここにいっぱい設定を書く
+
+;; エラー出力レベル                                        ;
+(setq display-warning-minimum-level :error)
+
+;; メニューツールバーの削除
+(when (fboundp 'tool-bar-mode)
+  (tool-bar-mode -1))
+
+;; フォント設定 -- Cicaフォント
+(set-face-attribute 'default nil
+                    :family "Cica"
+                    :height 180)
+
+;; colorscheme設定
+(leaf monokai-theme
+  :ensure t
+  :config
+  ;; テーマの有効化
+  (load-theme 'monokai t))
+
 (leaf leaf
   :config
   (leaf leaf-convert :ensure t)
