@@ -86,6 +86,43 @@
   :init
   (vertico-mode 1))
 
+;; win-switch - ウィンドウ操作を改善する
+(leaf win-switch
+  :ensure t
+  :config
+  ;; win-switchを有効にするキーバインドの設定
+  ;; 例: C-x o でwin-switchを有効化
+  (global-set-key (kbd "C-x o") 'win-switch-dispatch)
+
+  ;; win-switchの操作に関する設定
+  ;; ウィンドウ切り替えの待ち時間（秒）
+  (setq win-switch-idle-time 0.75)
+  ;; ウィンドウを切り替えるキー
+  (setq win-switch-window-threshold 1)
+  (setq win-switch-other-window-first nil)
+
+  (win-switch-set-keys '("k") 'up)
+  (win-switch-set-keys '("j") 'down)
+  (win-switch-set-keys '("h") 'left)
+  (win-switch-set-keys '("l") 'right)
+  (win-switch-set-keys '("o") 'next-window)
+  (win-switch-set-keys '("p") 'previous-window)
+  ;; リサイズ
+  (win-switch-set-keys '("K") 'enlarge-vertically)
+  (win-switch-set-keys '("J") 'shrink-vertically)
+  (win-switch-set-keys '("H") 'shrink-horizontally)
+  (win-switch-set-keys '("L") 'enlarge-horizontally)
+  ;; 分割
+  (win-switch-set-keys '("3") 'split-horizontally)
+  (win-switch-set-keys '("2") 'split-vertically)
+  (win-switch-set-keys '("0") 'delete-window)
+  ;; その他
+  (win-switch-set-keys '(" ") 'other-frame)
+  (win-switch-set-keys '("u" [return]) 'exit)
+  (win-switch-set-keys '("\M-\C-g") 'emergency-exit)
+  ;; C-x oを置き換える
+  (global-set-key (kbd "C-x o") 'win-switch-dispatch))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; org-modeの設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -131,10 +168,20 @@
   ;; 元のC-uの挙動をC-.へ割当
   (global-set-key (kbd "C-.") 'universal-argument))
 
+;; C-x C-cによるEmacs停止を無効化
 (leaf *disable-ctrl-x-ctrl-c
   :config
   (global-set-key (kbd "C-x C-c") 'ignore))
 
+(leaf *C-xとC-jをswap
+  :config
+  (define-key key-translation-map (kbd "C-j") (kbd "C-x"))
+  (define-key key-translation-map (kbd "C-x") (kbd "C-j")))
+
+(leaf *M-xとM-jをswap
+  :config
+  (define-key key-translation-map (kbd "M-x") (kbd "M-j"))
+  (define-key key-translation-map (kbd "M-j") (kbd "M-x")))
 
 (leaf leaf
   :config
