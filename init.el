@@ -50,7 +50,7 @@
   (load-theme 'monokai t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;; packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; which-keyのインストール
@@ -145,7 +145,7 @@
            "* %U\n%?\n%i\n")))
 
   ;; org-agendaのファイル
-  (setq org-agenda-files (list (concat org-directory "tasks.org")
+  (setq org-agenda-files (list (concat org-directory "todo.org")
                                (concat org-directory "calendar.org")))
 
   ;; org-modeのキー設定
