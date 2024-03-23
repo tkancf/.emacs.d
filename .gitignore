@@ -1,3 +1,6 @@
 elpa
 elpa/**
 init.elc
+bookmarks
+recentf
+auto-save-list/**
