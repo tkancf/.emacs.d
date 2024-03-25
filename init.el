@@ -143,10 +143,21 @@
   ;; C-x oを置き換える
   (global-set-key (kbd "C-x o") 'win-switch-dispatch))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; org-modeの設定
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; evil-mode
+(leaf evil
+  :doc "Extensible Vi layer for Emacs."
+  :req "emacs-25.1"
+  :tag "editor" "emacs" "vim"
+ 
+  :url "https://evil.readthedocs.io/en/latest/index.html"
+  :added "2023-01-01"
+  :ensure t
+  :config
+  (evil-mode 1)
+  ;; C-u を半ページアップに設定
+  (setq evil-want-C-u-scroll t))
 
+;; org-mode
 ;; org-directoryの設定
 (setq org-dir "~/Dropbox/org/")
 
@@ -170,6 +181,9 @@
   ;; スピードコマンド ON
   (setq org-use-speed-commands t)
 
+  ;; タスクをDONEとマークした際に完了日時を自動記録
+  (setq org-log-done 'time)
+  
   ;; org-modeのキー設定
   (global-set-key "\C-cc" 'org-capture) ;; org-capture
   (define-key global-map "\C-ca" 'org-agenda)) ;; org-agenda
