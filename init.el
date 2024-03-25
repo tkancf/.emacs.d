@@ -29,8 +29,15 @@
     (leaf-keywords-init)))
 
 ;; ここにいっぱい設定を書く
+(global-visual-line-mode 1)
 
-;; エラー出力レベル                                        ;
+;; バックアップファイルを作成しない
+(setq make-backup-files nil)
+
+;; オートセーブファイルを作成しない
+(setq auto-save-default nil)
+
+;; エラー出力レベル
 (setq display-warning-minimum-level :error)
 
 ;; メニューツールバーの削除
@@ -48,6 +55,19 @@
   :config
   ;; テーマの有効化
   (load-theme 'monokai t))
+
+;; 最近開いたファイルの表示
+(leaf recentf
+  :require t
+  :config
+  ;; recentf-modeを有効にする
+  (recentf-mode 1)
+  ;; 最近開いたファイルのリストの最大数
+  (setq recentf-max-saved-items 100)
+  ;; recentfのリストを保存するファイルの場所
+  (setq recentf-save-file (expand-file-name "recentf" user-emacs-directory))
+  ;; Emacs終了時に自動的にrecentfを保存
+  (add-hook 'kill-emacs-hook 'recentf-save-list))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; packages
@@ -127,7 +147,6 @@
 ;; org-modeの設定
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; orgのディレクトリ設定
 ;; org-directoryの設定
 (setq org-dir "~/Dropbox/org/")
 
@@ -141,16 +160,25 @@
            "* TODO %?\n  %i\n  %a")
           ("n" "Note" entry (file+headline ,(concat org-dir "memo.org") "Memo")
            "* %?\nEntered on %U\n  %i\n  %a")
-          ("j" "Journal" entry (file+headline ,(concat org-dir "journal.org") "Journal")
+          ("j" "Journal" entry (file ,(concat org-dir "journal.org"))
            "* %U\n%?\n%i\n")))
 
   ;; org-agendaのファイル
   (setq org-agenda-files (list (concat org-directory "todo.org")
                                (concat org-directory "calendar.org")))
 
+  ;; スピードコマンド ON
+  (setq org-use-speed-commands t)
+
   ;; org-modeのキー設定
   (global-set-key "\C-cc" 'org-capture) ;; org-capture
   (define-key global-map "\C-ca" 'org-agenda)) ;; org-agenda
+
+;; GigHub Flavored Markdownをエクスポートするパッケージ
+(leaf ox-gfm
+  :ensure t
+  :require t)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; オリジナルキーマップ
@@ -173,10 +201,9 @@
   :config
   (global-set-key (kbd "C-x C-c") 'ignore))
 
-(leaf *C-xとC-jをswap
+(leaf *C-xにC-jを割当
   :config
-  (define-key key-translation-map (kbd "C-j") (kbd "C-x"))
-  (define-key key-translation-map (kbd "C-x") (kbd "C-j")))
+  (define-key key-translation-map (kbd "C-j") (kbd "C-x"))) 
 
 (leaf *M-xとM-jをswap
   :config
