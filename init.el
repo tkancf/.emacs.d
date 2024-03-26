@@ -67,7 +67,9 @@
   ;; recentfのリストを保存するファイルの場所
   (setq recentf-save-file (expand-file-name "recentf" user-emacs-directory))
   ;; Emacs終了時に自動的にrecentfを保存
-  (add-hook 'kill-emacs-hook 'recentf-save-list))
+  (add-hook 'kill-emacs-hook 'recentf-save-list)
+  ;; C-x C-rをrecentf-open-filesに割り当てる
+  (global-set-key (kbd "C-x C-r") 'recentf-open-files))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; packages
@@ -143,6 +145,14 @@
   ;; C-x oを置き換える
   (global-set-key (kbd "C-x o") 'win-switch-dispatch))
 
+;; タブを見やすくカテゴリごとに良い感じにまとめてくれる
+(leaf centaur-tabs
+  :ensure t
+  :config
+  (centaur-tabs-mode t)
+  (global-set-key (kbd "<C-tab>") 'centaur-tabs-forward)
+  (global-set-key (kbd "<C-S-tab>") 'centaur-tabs-backward))
+
 ;; evil-mode
 (leaf evil
   :doc "Extensible Vi layer for Emacs."
@@ -154,6 +164,25 @@
   :ensure t
   :config
   (evil-mode 1)
+
+  ;; C-n, p, f, b, a, e, y
+  (define-key evil-insert-state-map (kbd "C-n") 'next-line)
+  (define-key evil-insert-state-map (kbd "C-p") 'previous-line)
+  (define-key evil-insert-state-map (kbd "C-f") 'forward-char)
+  (define-key evil-insert-state-map (kbd "C-b") 'backward-char)
+  (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line)
+  (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
+  (define-key evil-insert-state-map (kbd "C-y") 'yank)
+
+  ;; コロン(:)とセミコロン(;)を入れ替える
+  (define-key evil-normal-state-map (kbd ":") 'evil-repeat-find-char)
+  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
+
+  ;; 'gt' でタブを前に移動
+  (define-key evil-normal-state-map (kbd "gt") 'centaur-tabs-forward)
+  ;; 'gT' でタブを後ろに移動
+  (define-key evil-normal-state-map (kbd "gT") 'centaur-tabs-backward)
+  
   ;; C-u を半ページアップに設定
   (setq evil-want-C-u-scroll t))
 
@@ -167,16 +196,20 @@
   :config
   ;; org-captureのテンプレート
   (setq org-capture-templates
-        `(("t" "Todo" entry (file+headline ,(concat org-dir "todo.org") "Todo")
+        `(("u" "Todo with Link" entry (file+headline ,(concat org-dir "todo.org") "Todo")
            "* TODO %?\n  %i\n  %a")
-          ("n" "Note" entry (file+headline ,(concat org-dir "memo.org") "Memo")
+          ("t" "Todo" entry (file+headline ,(concat org-dir "todo.org") "Todo")
+           "* TODO %?\n SCHEDULED: %<%Y-%m-%d>\n")
+          ("m" "Memo" entry (file+headline ,(concat org-dir "memo.org") "Memo")
+           "* %?\n")
+          ("n" "Memo with Link" entry (file+headline ,(concat org-dir "memo.org") "Memo")
            "* %?\nEntered on %U\n  %i\n  %a")
           ("j" "Journal" entry (file ,(concat org-dir "journal.org"))
-           "* %U\n%?\n%i\n")))
+           "* %<%Y-%m-%d>\n%?\n%i\n")))
 
   ;; org-agendaのファイル
   (setq org-agenda-files (list (concat org-directory "todo.org")
-                               (concat org-directory "calendar.org")))
+                               (concat org-directory "journal.org")))
 
   ;; スピードコマンド ON
   (setq org-use-speed-commands t)
@@ -184,6 +217,9 @@
   ;; タスクをDONEとマークした際に完了日時を自動記録
   (setq org-log-done 'time)
   
+  ;; 目次の生成を無効化
+  (setq org-md-export-with-toc nil)
+
   ;; org-modeのキー設定
   (global-set-key "\C-cc" 'org-capture) ;; org-capture
   (define-key global-map "\C-ca" 'org-agenda)) ;; org-agenda
