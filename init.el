@@ -218,14 +218,14 @@
   :config
   (global-set-key (kbd "C-x C-c") 'ignore))
 
-(leaf *C-xにC-jを割当
-  :config
-  (define-key key-translation-map (kbd "C-j") (kbd "C-x"))) 
-
-(leaf *M-xとM-jをswap
-  :config
-  (define-key key-translation-map (kbd "M-x") (kbd "M-j"))
-  (define-key key-translation-map (kbd "M-j") (kbd "M-x")))
+;; (leaf *C-xにC-jを割当
+;;   :config
+;;   (define-key key-translation-map (kbd "C-j") (kbd "C-x"))) 
+;; 
+;; (leaf *M-xとM-jをswap
+;;   :config
+;;   (define-key key-translation-map (kbd "M-x") (kbd "M-j"))
+;;   (define-key key-translation-map (kbd "M-j") (kbd "M-x")))
 
 (leaf leaf
   :config
