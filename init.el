@@ -153,39 +153,6 @@
   (global-set-key (kbd "<C-tab>") 'centaur-tabs-forward)
   (global-set-key (kbd "<C-S-tab>") 'centaur-tabs-backward))
 
-;; evil-mode
-(leaf evil
-  :doc "Extensible Vi layer for Emacs."
-  :req "emacs-25.1"
-  :tag "editor" "emacs" "vim"
- 
-  :url "https://evil.readthedocs.io/en/latest/index.html"
-  :added "2023-01-01"
-  :ensure t
-  :config
-  (evil-mode 1)
-
-  ;; C-n, p, f, b, a, e, y
-  (define-key evil-insert-state-map (kbd "C-n") 'next-line)
-  (define-key evil-insert-state-map (kbd "C-p") 'previous-line)
-  (define-key evil-insert-state-map (kbd "C-f") 'forward-char)
-  (define-key evil-insert-state-map (kbd "C-b") 'backward-char)
-  (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line)
-  (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
-  (define-key evil-insert-state-map (kbd "C-y") 'yank)
-
-  ;; コロン(:)とセミコロン(;)を入れ替える
-  (define-key evil-normal-state-map (kbd ":") 'evil-repeat-find-char)
-  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
-
-  ;; 'gt' でタブを前に移動
-  (define-key evil-normal-state-map (kbd "gt") 'centaur-tabs-forward)
-  ;; 'gT' でタブを後ろに移動
-  (define-key evil-normal-state-map (kbd "gT") 'centaur-tabs-backward)
-  
-  ;; C-u を半ページアップに設定
-  (setq evil-want-C-u-scroll t))
-
 ;; org-mode
 ;; org-directoryの設定
 (setq org-dir "~/Dropbox/org/")
