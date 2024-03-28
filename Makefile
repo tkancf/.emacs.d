@@ -1,8 +1,11 @@
+EMACS ?= emacs
+
 .DEFAULT_GOAL:=help
 
 .PHONY: build
 build: ## Build emacs config
-	@emacs --batch -f batch-byte-compile ~/.emacs.d/init.el
+	$(EMACS) -Q --batch --eval "(progn (require 'ob-tangle) (org-babel-tangle-file \"./index.org\" \"./init.el\" \"emacs-lisp\"))"
+	$(EMACS) -Q --batch -f batch-byte-compile init.el
 
 .PHONY: help
 help: ## Display this help screen
