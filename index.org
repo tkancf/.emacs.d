@@ -1,0 +1,41 @@
+* 概要
+
+Emacsのconfig
+Make buildでorgファイルを元に、init.elを生成する
+
+* Initialize
+
+#+BEGIN_SRC emacs-lisp
+;; init.el --- My init.el -*- lexical-binding: t -*-
+;; Configurations for Emacs
+#+END_SRC
+
+* Basic
+
+** タブでのインデントを\tからスペースに変更
+
+#+BEGIN_SRC emacs-lisp
+(setq indent-tabs-mode nil)
+#+END_SRC
+
+** ビープ音を消す
+
+#+BEGIN_SRC emacs-lisp
+(setq ring-bell-function 'ignore)
+#+END_SRC
+
+* 独自キーマップ
+
+** カーソル位置から行頭まで削除する
+
+#+BEGIN_SRC emacs-lisp
+(defun delete-to-beginning-of-line ()
+  (interactive)
+  (kill-region (line-beginning-position) (point)))
+
+(global-set-key (kbd "C-u") 'delete-to-beginning-of-line)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
