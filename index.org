@@ -39,8 +39,6 @@ Make buildでorgファイルを元に、init.elを生成する
   (setq ring-bell-function 'ignore)
 #+END_SRC
 
-* Keymap
-** カーソル位置から行頭まで削除する
 ** フォント
 
 #+BEGIN_SRC emacs-lisp
@@ -58,6 +56,13 @@ Make buildでorgファイルを元に、init.elを生成する
   (set-fontset-font t 'symbol (font-spec :family "Cica"))
 #+END_SRC
 
+** カーソル
+
+カーソルの点滅を無効にする
+
+#+BEGIN_SRC emacs-lisp
+  (blink-cursor-mode 0)
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
   (defun delete-to-beginning-of-line ()
@@ -67,18 +72,31 @@ Make buildでorgファイルを元に、init.elを生成する
   (global-set-key (kbd "C-u") 'delete-to-beginning-of-line)
 #+END_SRC
 
-** C-xをC-jにもマッピング
+*** C-j, C-xのスワップ
+
+xは何度も押してると貧弱な薬指が痛くなるので入れ替える
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-j") 'Control-X-prefix)
+  (define-key key-translation-map (kbd "C-j") (kbd "C-x"))
+  (define-key key-translation-map (kbd "C-x") (kbd "C-j"))
+#+END_SRC
+
+*** s-jにM-xの割当
+
+xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役割をもたせる
+
+#+BEGIN_SRC emacs-lisp
+  (define-key key-translation-map (kbd "s-j") (kbd "M-x"))
 #+END_SRC
 
 * package
-** leafのインストール
+** leaf
 
-参考: [[https://github.com/conao3/leaf.el][conao3/leaf.el: Flexible, declarative, and modern init.el package configuration]]
+- 参考
+  - [[https://github.com/conao3/leaf.el][conao3/leaf.el: Flexible, declarative, and modern init.el package configuration]]
+  -  [[https://qiita.com/conao3/items/347d7e472afd0c58fbd7#initel%E3%81%AE%E4%BD%9C%E6%88%90][Emacs入門から始めるleaf.el入門 #Emacs - Qiita]]
 
-*** leafのインストール
+*** leafの初期設定
 
 #+BEGIN_SRC emacs-lisp
   (eval-and-compile
@@ -104,8 +122,274 @@ Make buildでorgファイルを元に、init.elを生成する
       (leaf-keywords-init)))
 #+END_SRC
 
-** org-mode
+*** leaf便利パッケージ
 
+- leaf-convert
+  - プレーンなElispやuse-packageからleafへの変換機能
+    - ~M-x leaf-convert-replace-pop~, ~M-x leaf-convert-replace-region~
+- leaf-tree
+  - ~M-x leaf-tree-mode~
+
+#+BEGIN_SRC emacs-lisp
+  (leaf leaf
+    :config
+    (leaf leaf-convert :ensure t)
+    (leaf leaf-tree
+      :ensure t
+      :custom ((imenu-list-size . 30)
+               (imenu-list-position . 'left))))
+#+END_SRC
+
+- macrostep
+  - ~C-c e~ でleafマクロを展開する
+  - デバッグで使うらしい
+
+#+BEGIN_SRC emacs-lisp
+  (leaf macrostep
+    :ensure t
+    :bind (("C-c e" . macrostep-expand)))
+#+END_SRC
+
+** Theme
+
+#+BEGIN_SRC emacs-lisp
+  (leaf leaf-convert doom-themes
+    :ensure t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-one t)
+
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Enable custom neotree theme (all-the-icons must be installed!)
+    (doom-themes-neotree-config)
+    ;; or for treemacs users
+    (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
+#+END_SRC
+
+** whitch-key
+
+キーボードショートカットのヘルプを表示してくれる
+
+#+BEGIN_SRC emacs-lisp
+  (leaf which-key
+    :ensure t
+    :leaf-defer t
+    :custom ((which-key-idle-delay . 1.0))
+    :config
+    (which-key-mode 1))
+#+END_SRC
+
+** 補完(テキスト入力)
+
+*** corfu
+
+補完用フロントエンド
+[[https://github.com/minad/corfu][github.com/minad/corfu]]
+
+#+BEGIN_SRC emacs-lisp
+  (leaf corfu
+    :ensure t
+    :custom
+    ((corfu-auto . t)
+     (corfu-auto-delay . 0.2)
+     (corfu-cycle . t)
+     (corfu-auto-prefix . 1) ;; 補完候補を1文字で出す
+     (corfu-on-exact-match . nil))
+    :config
+    ;; 基本設定
+    (global-corfu-mode 1)
+
+    ;; indentモードでの補完を強化
+    (with-eval-after-load 'indent
+      (setq tab-always-indent 'complete)))
+#+END_SRC
+
+*** cape
+
+corfu向けに補完候補を提供するパッケージ
+[[https://github.com/minad/cape][github.com/minad/cape]]
+
+- cape-abbrev：完全な省略形（add-global-abbrev、add-mode-abbrev）。
+- cape-dabbrev: 現在のバッファからの完全なワード。dabbrev-capfEmacs 29も参照してください。
+- cape-dict: 辞書ファイルからの完全な単語。
+- cape-elisp-block: Org または Markdown コード ブロックで Elisp を完成させます。
+- cape-elisp-symbol: 完全な Elisp シンボル。
+- cape-emoji: 絵文字を完成させます。 Emacs 29 以降で利用可能です。
+- cape-file: 完全なファイル名。
+- cape-history: Eshell、Comint、またはミニバッファーの履歴から完了します。
+- cape-keyword: 完全なプログラミング言語キーワード。
+- cape-line: 現在のバッファから行全体を完成させます。
+- cape-rfc1345: RFC 1345 ニーモニックを使用した完全な Unicode 文字。
+- cape-sgml: SGML エンティティからの完全な Unicode 文字 (例: ) &alpha。
+- cape-tex: TeX コマンドからの完全な Unicode 文字。例\hbar:
+
+#+BEGIN_SRC emacs-lisp
+  (leaf cape
+    :ensure t
+    :init
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+    (add-to-list 'completion-at-point-functions #'cape-file)
+    (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+    (add-to-list 'completion-at-point-functions #'cape-history)
+    (add-to-list 'completion-at-point-functions #'cape-keyword)
+    :config
+    )
+#+END_SRC
+
+** 補完(ミニバッファ)
+
+参考: [[https://joppot.info/posts/2d8a8c1d-6d7f-4cf8-a51a-0f7e5c7e3c80][helmからモダンなvertico + consult + recentf + orderless + marginaliaに移行してみた]]
+
+*** vertico
+
+[[https://github.com/minad/vertico][github.com/minad/vertico]]
+M-xとか、C-j C-fでのファイル検索とかミニバッファでの操作がVimのUniteとかTelescopeみたいになる
+
+#+BEGIN_SRC emacs-lisp
+  (leaf vertico
+    :ensure t
+    :custom
+    (vertico-count . 15) ; 候補数を15に増やす
+    :init
+    (vertico-mode))
+#+END_SRC
+
+#+RESULTS:
+: vertico
+
+*** orderless
+
+verticoデフォルトだと、スペース区切りでfuzzyに絞り込みできないので、それを可能にするためのパッケージ
+
+#+BEGIN_SRC emacs-lisp
+  (leaf orderless
+    :ensure t
+    :init
+    ;; Set completion style for Emacs
+    (setq completion-styles '(orderless)
+          completion-category-defaults nil
+          completion-category-overrides '((file (styles . (partial-completion))))))
+#+END_SRC
+
+** recentf
+
+#+BEGIN_SRC emacs-lisp
+  (leaf recentf
+    :config
+    (setq recentf-max-saved-items 15             ; consult-bufferに表示する最近使ったファイルの最大表示数
+          recentf-exclude '(".recentf" "^/ssh:") ; recentfの履歴に含ませないファイルリスト
+          recentf-auto-cleanup 'never)           ; recentfの履歴を削除しない
+
+    (setq recentf-auto-save-timer
+          (run-with-idle-timer 30 t 'recentf-save-list)) ; バッファを開いて30秒以上したら履歴に登録
+    (recentf-mode 1))
+#+END_SRC
+
+** Consult
+
+検索、ナビゲーション等いろんな昨日を追加してくれる
+Consult-bufferが便利で、カスタマイズすることで、最近開いたファイル、ブックマークしたファイルを一度に表示できるので、それをverticoで絞り込んで移動出来るようになる
+
+#+BEGIN_SRC emacs-lisp
+  (leaf consult
+    :ensure t
+    :bind (("C-x b" . consult-buffer)
+           ("M-g M-g" . consult-goto-line)  ;; goto-lineをconsult-goto-lineに置き換え
+           ("C-c s" . consult-line)         ;; バッファ内をキーワードで検索
+           ("C-c o" . consult-outline)))    ;; アウトライン
+#+END_SRC
+
+** Evil
+
+- Vim likeキーバインド
+  - Meowも試したけどテキストオブジェクトが使えなかったりで合わなかった
+  - EvilのほうがVimに寄せようとしている感じが強い
+    - テキストオブジェクトも使える
+  - org-modeでう〜んってなった部分はevil-orgを入れてかなり改善した
+
+*** こだわりポイントメモ
+
+- EscでのEmacsステートからの脱出
+  - Vimに近い感覚で、とりあえずEsc押せばOKを実現できる
+- Super-oでのトグル
+  - デフォルトのC-zは小指が壊れるかと思った
+  - ノーマルモードでm押してEmacsステートとかも設定してたけど、どこからでもトグル出来るって感覚のほうが覚えやすかった
+
+#+BEGIN_SRC emacs-lisp
+  (leaf evil
+    :ensure t
+    :config
+    (evil-mode 1)
+    (setq evil-normal-state-cursor '(box "#EFEBEB"))
+    (setq evil-insert-state-cursor '(bar "#EFEBEB"))
+    (setq evil-default-cursor '(hbar "#7355AE"))
+    (with-eval-after-load 'evil-maps
+      ;; :と;をスワップ
+      (define-key evil-motion-state-map ";" 'evil-ex)
+      (define-key evil-motion-state-map ":" 'evil-repeat-find-char)
+      ;; ステート切り替えキーを変更
+      ;; normal modeでmを押したらEmacsステートに切り替え
+      ;; s-oのほうがいい気がした
+      ;; (define-key evil-normal-state-map (kbd "m") 'evil-emacs-state)
+      ;; (define-key evil-visual-state-map (kbd "m") 'evil-emacs-state)
+      ;; EmacsステートからESCでEvilモードに復帰
+      (define-key evil-emacs-state-map (kbd "ESC") 'evil-normal-state)
+      ;; あらゆるモードからSuper-oでステートをトグル
+      (define-key evil-emacs-state-map (kbd "s-o") 'evil-normal-state)
+      (define-key evil-normal-state-map (kbd "s-o") 'evil-emacs-state)
+      (define-key evil-insert-state-map (kbd "s-o") 'evil-emacs-state)
+      (define-key evil-visual-state-map (kbd "s-o") 'evil-emacs-state)
+
+      ;; C-uでVimと同じようにスクロール 
+      (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
+
+      ;; インサートステートでのキーマップをEmacsにちょっと寄せる
+      (define-key evil-insert-state-map (kbd "C-a") 'beginning-of-line)
+      (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
+      (define-key evil-insert-state-map (kbd "C-n") 'next-line)
+      (define-key evil-insert-state-map (kbd "C-p") 'previous-line)
+      (define-key evil-insert-state-map (kbd "C-f") 'forward-char)
+      (define-key evil-insert-state-map (kbd "C-b") 'backward-char)
+      (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
+      ))
+
+#+END_SRC
+
+#+RESULTS:
+: evil
+
+*** evil-surround
+
+vim-surroundみたいな動きを可能にする
+
+#+BEGIN_SRC emacs-lisp
+  (leaf evil-surround
+    :ensure t
+    :config
+    (global-evil-surround-mode 1))
+#+END_SRC
+
+*** evil-org
+
+参考: [[https://github.com/Somelauw/evil-org-mode][github.com/Somelauw/evil-org-mode]]
+
+#+BEGIN_SRC emacs-lisp
+  (leaf evil-org
+    :ensure t
+    :after org evil
+    :hook (org-mode-hook . evil-org-mode)
+    :config
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
+#+END_SRC
+
+** org-mode
 *** org-modeの基本設定
 
 #+BEGIN_SRC emacs-lisp
@@ -117,30 +401,42 @@ Make buildでorgファイルを元に、init.elを生成する
     (org-md-export-with-toc . nil)
     :config
     ;; org-captureのテンプレート
-    (setq org-capture-templates
-          `(("u" "Todo with Link" entry (file+headline ,(concat org-directory "todo.org") "Todo")
-             "* TODO %?\n  %i\n  %a")
-            ("t" "Todo" entry (file+headline ,(concat org-directory "todo.org") "Todo")
-             "* TODO %?\n SCHEDULED: %t\n")
-            ("m" "Memo" entry (file+headline ,(concat org-directory "memo.org") "Memo")
-             "* %?\n")
-            ("n" "Memo with Link" entry (file+headline ,(concat org-directory "memo.org") "Memo")
-             "* %?\nEntered on %U\n  %i\n  %a")
-            ("j" "Journal" entry (file ,(concat org-directory "journal.org"))
-             "* %<%Y-%m-%d>\n%?\n%i\n")))
-    ;; org-agendaのファイル
-    (setq org-agenda-files (list (concat org-directory "todo.org")
-                                 (concat org-directory "journal.org")))
+    (custom-set-variables
+     '(org-capture-templates
+       `(("u" "Todo with Link" entry (file+headline ,(concat org-directory "todo.org") "Todo")
+          "* TODO %?\n  %i\n  %a")
+         ("t" "Todo" entry (file+headline ,(concat org-directory "todo.org") "Todo")
+          "* TODO %?\n SCHEDULED: %t\n")
+         ("m" "Memo" entry (file+headline ,(concat org-directory "memo.org") "Memo")
+          "* %?\n")
+         ("n" "Memo with Link" entry (file+headline ,(concat org-directory "memo.org") "Memo")
+          "* %?\nEntered on %U\n  %i\n  %a")
+         ("j" "Journal" entry (file ,(concat org-directory "journal.org"))
+          "* %<%Y-%m-%d>\n%?\n%i\n")))
+     ;; org-agendaのファイル
+     '(org-agenda-files (list (concat org-directory "todo.org")
+                              (concat org-directory "journal.org"))))
     :bind
-    (("C-c c" . org-capture)
-     ("C-c a" . org-agenda)))
+    ("C-c c" . org-capture)
+    ("C-c a" . org-agenda))
 #+END_SRC
-
-#+RESULTS:
-: org
 
 ** GitHub Flavored Markdownをエクスポートするためのパッケージ
 
 #+BEGIN_SRC emacs-lisp
 
+#+END_SRC
+
+* provide
+
+参考: [[https://qiita.com/conao3/items/347d7e472afd0c58fbd7#initel%E3%81%AE%E4%BD%9C%E6%88%90][Emacs入門から始めるleaf.el入門 #Emacs - Qiita]]
+
+#+BEGIN_SRC emacs-lisp
+  (provide 'init)
+
+  ;; Local Variables:
+  ;; indent-tabs-mode: nil
+  ;; End:
+
+  ;;; init.el ends here
 #+END_SRC
