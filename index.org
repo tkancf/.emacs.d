@@ -11,13 +11,29 @@ Make buildでorgファイルを元に、init.elを生成する
 #+END_SRC
 
 * Basic
+** 余計な情報を表示しない
+
+ツールバー (Emacsの右上に出てくる保存とかのアイコン)を削除
+
+#+BEGIN_SRC emacs-lisp
+  (push '(tool-bar-lines . 0) default-frame-alist)
+#+END_SRC
+
+** スタートアップメッセージ非表示
+
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+#+END_SRC
+
 ** タブでのインデントを\tからスペースに変更
 
 #+BEGIN_SRC emacs-lisp
   (setq indent-tabs-mode nil)
 #+END_SRC
 
-** ビープ音を消す
+** ビープ音
+
+ビープ音を消す
 
 #+BEGIN_SRC emacs-lisp
   (setq ring-bell-function 'ignore)
