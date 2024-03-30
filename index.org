@@ -41,6 +41,23 @@ Make buildでorgファイルを元に、init.elを生成する
 
 * Keymap
 ** カーソル位置から行頭まで削除する
+** フォント
+
+#+BEGIN_SRC emacs-lisp
+  ;; Cicaフォントの設定
+  (set-face-attribute 'default nil
+                      :family "Cica"
+                      :height 180) ; フォントの大きさは好みで調整してください
+
+  ;; 日本語文字にもCicaフォントを使用
+  (set-fontset-font t 'japanese-jisx0208 (font-spec :family "Cica"))
+  (set-fontset-font t 'japanese-jisx0212 (font-spec :family "Cica"))
+  (set-fontset-font t 'katakana-jisx0201 (font-spec :family "Cica"))
+
+  ;; 絵文字等のためにシンボルフォントも指定する
+  (set-fontset-font t 'symbol (font-spec :family "Cica"))
+#+END_SRC
+
 
 #+BEGIN_SRC emacs-lisp
   (defun delete-to-beginning-of-line ()
