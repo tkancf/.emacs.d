@@ -64,6 +64,19 @@ Make buildでorgファイルを元に、init.elを生成する
   (blink-cursor-mode 0)
 #+END_SRC
 
+** 自動生成ファイル
+
+作らないようにしたい
+
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil)
+  (setq auto-save-list-file-prefix nil)
+  (setq create-lockfiles nil)
+#+END_SRC
+
+** Keymap
+*** カーソル位置から行頭まで削除する
+
 #+BEGIN_SRC emacs-lisp
   (defun delete-to-beginning-of-line ()
     (interactive)
