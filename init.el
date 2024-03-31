@@ -168,11 +168,11 @@
     ;; :と;をスワップ
     (define-key evil-motion-state-map ";" 'evil-ex)
     (define-key evil-motion-state-map ":" 'evil-repeat-find-char)
+
+    ;; C-uでVimと同じようにスクロール 
+    (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
+
     ;; ステート切り替えキーを変更
-    ;; normal modeでmを押したらEmacsステートに切り替え
-    ;; s-oのほうがいい気がした
-    ;; (define-key evil-normal-state-map (kbd "m") 'evil-emacs-state)
-    ;; (define-key evil-visual-state-map (kbd "m") 'evil-emacs-state)
     ;; EmacsステートからESCでEvilモードに復帰
     (define-key evil-emacs-state-map (kbd "ESC") 'evil-normal-state)
     ;; あらゆるモードからSuper-oでステートをトグル
@@ -181,17 +181,16 @@
     (define-key evil-insert-state-map (kbd "s-o") 'evil-emacs-state)
     (define-key evil-visual-state-map (kbd "s-o") 'evil-emacs-state)
 
-    ;; C-uでVimと同じようにスクロール 
-    (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
-
     ;; インサートステートでのキーマップをEmacsにちょっと寄せる
-    (define-key evil-insert-state-map (kbd "C-a") 'beginning-of-line)
-    (define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
-    (define-key evil-insert-state-map (kbd "C-n") 'next-line)
-    (define-key evil-insert-state-map (kbd "C-p") 'previous-line)
-    (define-key evil-insert-state-map (kbd "C-f") 'forward-char)
-    (define-key evil-insert-state-map (kbd "C-b") 'backward-char)
-    (define-key evil-insert-state-map (kbd "C-k") 'kill-line)
+    ;; nilを定義するとEmacsデフォルトの挙動になる
+    (define-key evil-insert-state-map (kbd "TAB") 'nil)
+    (define-key evil-insert-state-map (kbd "C-a") 'nil)
+    (define-key evil-insert-state-map (kbd "C-e") 'nil)
+    (define-key evil-insert-state-map (kbd "C-n") 'nil)
+    (define-key evil-insert-state-map (kbd "C-p") 'nil)
+    (define-key evil-insert-state-map (kbd "C-f") 'nil)
+    (define-key evil-insert-state-map (kbd "C-b") 'nil)
+    (define-key evil-insert-state-map (kbd "C-k") 'nil)
     ))
 
 (leaf evil-surround
