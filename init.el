@@ -102,9 +102,9 @@
   :ensure t
   :custom
   ((corfu-auto . t)
-   (corfu-auto-delay . 0.2)
+   (corfu-auto-delay . 0.1)
    (corfu-cycle . t)
-   (corfu-auto-prefix . 1) ;; 補完候補を1文字で出す
+   (corfu-auto-prefix . 2) ;; 補完候補を2文字で出す
    (corfu-on-exact-match . nil))
   :config
   ;; 基本設定
@@ -221,6 +221,22 @@
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
+(leaf yasnippet
+  :ensure t
+  :init
+  (yas-global-mode 1)
+  :config
+  (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
+  (yas-reload-all))
+
+(leaf projectile
+  :ensure t
+  :config
+  (projectile-mode +1)
+  ;;(setq projectile-project-search-path '("~/projects"))
+  (setq projectile-globally-ignored-files '("*.jpg" "*.png"))
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+
 (leaf org
   :custom
   (org-directory . "~/Dropbox/org/")
@@ -249,6 +265,12 @@
   ("C-c a" . org-agenda))
 
 
+
+(leaf dired-toggle
+  :ensure t
+  :bind (("C-x -" . dired-toggle))
+  :config
+  )
 
 (provide 'init)
 
