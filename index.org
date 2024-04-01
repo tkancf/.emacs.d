@@ -167,7 +167,7 @@ xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役�
 ** Theme
 
 #+BEGIN_SRC emacs-lisp
-  (leaf leaf-convert doom-themes
+  (leaf doom-themes
     :ensure t
     :config
     ;; Global settings (defaults)
