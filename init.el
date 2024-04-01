@@ -159,6 +159,7 @@
 
 (leaf evil
   :ensure t
+  :after evil-leader
   :config
   (evil-mode 1)
   (setq evil-normal-state-cursor '(box "#EFEBEB"))
@@ -192,6 +193,20 @@
     (define-key evil-insert-state-map (kbd "C-b") 'nil)
     (define-key evil-insert-state-map (kbd "C-k") 'nil)
     ))
+
+(leaf evil-leader
+  :ensure t
+  :require t
+  :config
+  ;; global-evil-leader-modeを有効化
+  (global-evil-leader-mode)
+  ;; リーダーキーとしてスペースキーを設定
+  (evil-leader/set-leader "<SPC>")
+  ;; リーダーキーの後に`w`を押すと、`save-buffer`を実行
+  (evil-leader/set-key
+    "c" 'org-capture
+    "a" 'org-agenda
+    "k" 'kill-buffer))
 
 (leaf evil-surround
   :ensure t

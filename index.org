@@ -199,7 +199,6 @@ xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役�
 #+END_SRC
 
 ** 補完(テキスト入力)
-
 *** corfu
 
 補完用フロントエンド
@@ -210,9 +209,9 @@ xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役�
     :ensure t
     :custom
     ((corfu-auto . t)
-     (corfu-auto-delay . 0.2)
+     (corfu-auto-delay . 0.1)
      (corfu-cycle . t)
-     (corfu-auto-prefix . 1) ;; 補完候補を1文字で出す
+     (corfu-auto-prefix . 2) ;; 補完候補を2文字で出す
      (corfu-on-exact-match . nil))
     :config
     ;; 基本設定
@@ -326,7 +325,9 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
     - テキストオブジェクトも使える
   - org-modeでう〜んってなった部分はevil-orgを入れてかなり改善した
 
-*** こだわりポイントメモ
+*** Evil
+
+**** こだわりポイントメモ
 
 - EscでのEmacsステートからの脱出
   - Vimに近い感覚で、とりあえずEsc押せばOKを実現できる
@@ -334,9 +335,12 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
   - デフォルトのC-zは小指が壊れるかと思った
   - ノーマルモードでm押してEmacsステートとかも設定してたけど、どこからでもトグル出来るって感覚のほうが覚えやすかった
 
+**** 設定
+
 #+BEGIN_SRC emacs-lisp
   (leaf evil
     :ensure t
+    :after evil-leader
     :config
     (evil-mode 1)
     (setq evil-normal-state-cursor '(box "#EFEBEB"))
@@ -346,7 +350,7 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
       ;; :と;をスワップ
       (define-key evil-motion-state-map ";" 'evil-ex)
       (define-key evil-motion-state-map ":" 'evil-repeat-find-char)
-  
+
       ;; C-uでVimと同じようにスクロール 
       (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
 
@@ -370,7 +374,6 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
       (define-key evil-insert-state-map (kbd "C-b") 'nil)
       (define-key evil-insert-state-map (kbd "C-k") 'nil)
       ))
-
 #+END_SRC
 
 *** evil-surround
@@ -396,6 +399,34 @@ vim-surroundみたいな動きを可能にする
     :config
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
+#+END_SRC
+
+** yasnippet
+
+スニペット設定
+
+スニペット自体は ~~/.emacs.d/snippets/~ 配下
+
+#+BEGIN_SRC emacs-lisp
+  (leaf yasnippet
+    :ensure t
+    :init
+    (yas-global-mode 1)
+    :config
+    (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
+    (yas-reload-all))
+#+END_SRC
+
+** projectile
+
+#+BEGIN_SRC emacs-lisp
+  (leaf projectile
+    :ensure t
+    :config
+    (projectile-mode +1)
+    ;;(setq projectile-project-search-path '("~/projects"))
+    (setq projectile-globally-ignored-files '("*.jpg" "*.png"))
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 #+END_SRC
 
 ** org-mode
