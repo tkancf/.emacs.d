@@ -376,6 +376,27 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
       ))
 #+END_SRC
 
+*** evil-leader
+
+#+BEGIN_SRC emacs-lisp
+  (leaf evil-leader
+    :ensure t
+    :require t
+    :config
+    ;; global-evil-leader-modeを有効化
+    (global-evil-leader-mode)
+    ;; リーダーキーとしてスペースキーを設定
+    (evil-leader/set-leader "<SPC>")
+    ;; リーダーキーの後に`w`を押すと、`save-buffer`を実行
+    (evil-leader/set-key
+      "c" 'org-capture
+      "a" 'org-agenda
+      "k" 'kill-buffer))
+    #+END_SRC
+
+    #+RESULTS:
+    : evil-leader
+
 *** evil-surround
 
 vim-surroundみたいな動きを可能にする
