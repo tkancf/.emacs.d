@@ -266,30 +266,31 @@
   ("C-c a" . org-agenda))
 
 (leaf org-roam
-:ensure t
-:custom ((org-roam-directory . org-directory))
-:config
-(org-roam-setup)
-;; キャプチャテンプレートの設定
-(setq org-roam-capture-templates
-      '(("f" "Fleeting(一時メモ)" plain "%?"
-         :target (file+head "fleeting/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
-         :unnarrowed t)
-        ("l" "Literature(文献)" plain "%?"
-         :target (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
-         :unnarrowed t)
-        ("p" "Permanent(記事)" plain "%?"
-         :target (file+head "permanent/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
-         :unnarrowed t)
-        ("b" "Publish(ブログ・Zenn・Qiitaなど)" plain "%?"
-         :target (file+head "publish/%<%Y%m%d%H%M%S>.org" "#+TITLE: ${title}\n")
-         :unnarrowed t)))
+  :ensure t
+  :custom ((org-roam-directory . org-directory))
+  :bind (("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c r" . org-roam-capture))
+  :config
+  (org-roam-setup)
+  ;; キャプチャテンプレートの設定
+  (setq org-roam-capture-templates
+        '(("f" "Fleeting(一時メモ)" plain "%?"
+           :target (file+head "fleeting/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+           :unnarrowed t)
+          ("l" "Literature(文献)" plain "%?"
+           :target (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+           :unnarrowed t)
+          ("p" "Permanent(記事)" plain "%?"
+           :target (file+head "permanent/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+           :unnarrowed t)
+          ("b" "Publish(ブログ・Zenn・Qiitaなど)" plain "%?"
+           :target (file+head "publish/${slug}.org" "#+TITLE: ${title}\n")
+           :unnarrowed t))))
 
-;; org-roam-captureへのキーバインド設定
-(leaf org-roam-capture
-  :bind (("C-c r" . org-roam-capture))))
-
-
+(leaf ox-gfm
+  :ensure t
+  :after org)
 
 (leaf dired-toggle
   :ensure t

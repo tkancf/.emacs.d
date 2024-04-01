@@ -508,7 +508,9 @@ org-roamの設定
 ** GitHub Flavored Markdownをエクスポートするためのパッケージ
 
 #+BEGIN_SRC emacs-lisp
-
+(leaf ox-gfm
+  :ensure t
+  :after org)
 #+END_SRC
 
 ** dired
