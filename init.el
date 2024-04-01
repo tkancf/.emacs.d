@@ -27,6 +27,7 @@
 (setq make-backup-files nil)
 (setq auto-save-list-file-prefix nil)
 (setq create-lockfiles nil)
+(setq auto-save-default nil)
 
 (defun delete-to-beginning-of-line ()
   (interactive)
@@ -263,6 +264,30 @@
   :bind
   ("C-c c" . org-capture)
   ("C-c a" . org-agenda))
+
+(leaf org-roam
+:ensure t
+:custom ((org-roam-directory . org-directory))
+:config
+(org-roam-setup)
+;; キャプチャテンプレートの設定
+(setq org-roam-capture-templates
+      '(("f" "Fleeting(一時メモ)" plain "%?"
+         :target (file+head "fleeting/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+         :unnarrowed t)
+        ("l" "Literature(文献)" plain "%?"
+         :target (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+         :unnarrowed t)
+        ("p" "Permanent(記事)" plain "%?"
+         :target (file+head "permanent/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+         :unnarrowed t)
+        ("b" "Publish(ブログ・Zenn・Qiitaなど)" plain "%?"
+         :target (file+head "publish/%<%Y%m%d%H%M%S>.org" "#+TITLE: ${title}\n")
+         :unnarrowed t)))
+
+;; org-roam-captureへのキーバインド設定
+(leaf org-roam-capture
+  :bind (("C-c r" . org-roam-capture))))
 
 
 

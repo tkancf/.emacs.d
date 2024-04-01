@@ -72,6 +72,7 @@ Make buildでorgファイルを元に、init.elを生成する
   (setq make-backup-files nil)
   (setq auto-save-list-file-prefix nil)
   (setq create-lockfiles nil)
+  (setq auto-save-default nil)
 #+END_SRC
 
 ** Keymap
@@ -272,9 +273,6 @@ M-xとか、C-j C-fでのファイル検索とかミニバッファでの操作�
     (vertico-mode))
 #+END_SRC
 
-#+RESULTS:
-: vertico
-
 *** orderless
 
 verticoデフォルトだと、スペース区切りでfuzzyに絞り込みできないので、それを可能にするためのパッケージ
@@ -394,9 +392,6 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
       "k" 'kill-buffer))
     #+END_SRC
 
-    #+RESULTS:
-    : evil-leader
-
 *** evil-surround
 
 vim-surroundみたいな動きを可能にする
@@ -480,6 +475,34 @@ vim-surroundみたいな動きを可能にする
     :bind
     ("C-c c" . org-capture)
     ("C-c a" . org-agenda))
+#+END_SRC
+*** org-roam
+
+org-roamの設定
+
+#+BEGIN_SRC emacs-lisp
+  (leaf org-roam
+    :ensure t
+    :custom ((org-roam-directory . org-directory))
+    :bind (("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           ("C-c r" . org-roam-capture))
+    :config
+    (org-roam-setup)
+    ;; キャプチャテンプレートの設定
+    (setq org-roam-capture-templates
+          '(("f" "Fleeting(一時メモ)" plain "%?"
+             :target (file+head "fleeting/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+             :unnarrowed t)
+            ("l" "Literature(文献)" plain "%?"
+             :target (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+             :unnarrowed t)
+            ("p" "Permanent(記事)" plain "%?"
+             :target (file+head "permanent/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n")
+             :unnarrowed t)
+            ("b" "Publish(ブログ・Zenn・Qiitaなど)" plain "%?"
+             :target (file+head "publish/${slug}.org" "#+TITLE: ${title}\n")
+             :unnarrowed t))))
 #+END_SRC
 
 ** GitHub Flavored Markdownをエクスポートするためのパッケージ
