@@ -371,6 +371,7 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
       (define-key evil-insert-state-map (kbd "C-f") 'nil)
       (define-key evil-insert-state-map (kbd "C-b") 'nil)
       (define-key evil-insert-state-map (kbd "C-k") 'nil)
+      (define-key evil-insert-state-map (kbd "C-r") 'nil)
       ))
 #+END_SRC
 
