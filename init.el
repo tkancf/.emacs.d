@@ -74,7 +74,7 @@
   :ensure t
   :bind (("C-c e" . macrostep-expand)))
 
-(leaf leaf-convert doom-themes
+(leaf doom-themes
   :ensure t
   :config
   ;; Global settings (defaults)
@@ -193,21 +193,28 @@
     (define-key evil-insert-state-map (kbd "C-f") 'nil)
     (define-key evil-insert-state-map (kbd "C-b") 'nil)
     (define-key evil-insert-state-map (kbd "C-k") 'nil)
+    (define-key evil-insert-state-map (kbd "C-r") 'nil)
     ))
 
 (leaf evil-leader
   :ensure t
   :require t
   :config
-  ;; global-evil-leader-modeを有効化
-  (global-evil-leader-mode)
+  ;; global-evil-leader-modeが未設定の場合のみ、有効化
+  (unless (bound-and-true-p global-evil-leader-mode)
+    (global-evil-leader-mode 1))
   ;; リーダーキーとしてスペースキーを設定
   (evil-leader/set-leader "<SPC>")
-  ;; リーダーキーの後に`w`を押すと、`save-buffer`を実行
   (evil-leader/set-key
+    "<SPC>" 'execute-extended-command
+    "b" 'consult-buffer
     "c" 'org-capture
     "a" 'org-agenda
-    "k" 'kill-buffer))
+    "rc" 'org-roam-capture
+    "rf" 'org-roam-node-find
+    "ri" 'org-roam-node-insert
+    "rg" 'org-id-get-create
+    ))
 
 (leaf evil-surround
   :ensure t
