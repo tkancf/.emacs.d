@@ -103,6 +103,19 @@ xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役�
   (define-key key-translation-map (kbd "s-j") (kbd "M-x"))
 #+END_SRC
 
+*** s-kに*の割当
+
+org-modeで*を連打してるとShiftキーのせいで左手の小指が痛くなるので
+
+#+BEGIN_SRC emacs-lisp :results none
+  (defun insert-asterisk ()
+    "Insert an asterisk at the cursor position."
+    (interactive)
+    (insert "*"))
+
+  (global-set-key (kbd "s-k") 'insert-asterisk)
+#+END_SRC
+
 * package
 ** use-package
 
