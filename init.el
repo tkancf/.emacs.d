@@ -46,35 +46,15 @@
                        ("melpa" . "https://melpa.org/packages/")
                        ("gnu" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
-  (unless (package-installed-p 'leaf)
+  (unless (package-installed-p 'use-package)
     (package-refresh-contents)
-    (package-install 'leaf))
+    (package-install 'use-package)))
 
-  (leaf leaf-keywords
-    :ensure t
-    :init
-    ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
-    (leaf hydra :ensure t)
-    (leaf el-get :ensure t)
-    (leaf blackout :ensure t)
 
-    :config
-    ;; initialize leaf-keywords.el
-    (leaf-keywords-init)))
 
-(leaf leaf
-  :config
-  (leaf leaf-convert :ensure t)
-  (leaf leaf-tree
-    :ensure t
-    :custom ((imenu-list-size . 30)
-             (imenu-list-position . 'left))))
 
-(leaf macrostep
-  :ensure t
-  :bind (("C-c e" . macrostep-expand)))
 
-(leaf doom-themes
+(use-package doom-themes
   :ensure t
   :config
   ;; Global settings (defaults)
@@ -92,21 +72,20 @@
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
 
-(leaf which-key
+(use-package which-key
   :ensure t
-  :leaf-defer t
-  :custom ((which-key-idle-delay . 1.0))
+  :custom ((which-key-idle-delay 1.0))
   :config
   (which-key-mode 1))
 
-(leaf corfu
+(use-package corfu
   :ensure t
   :custom
-  ((corfu-auto . t)
-   (corfu-auto-delay . 0.1)
-   (corfu-cycle . t)
-   (corfu-auto-prefix . 2) ;; 補完候補を2文字で出す
-   (corfu-on-exact-match . nil))
+  ((corfu-auto t)
+   (corfu-auto-delay 0.1)
+   (corfu-cycle t)
+   (corfu-auto-prefix 2) ;; 補完候補を2文字で出す
+   (corfu-on-exact-match nil))
   :config
   ;; 基本設定
   (global-corfu-mode 1)
@@ -115,7 +94,7 @@
   (with-eval-after-load 'indent
     (setq tab-always-indent 'complete)))
 
-(leaf cape
+(use-package cape
   :ensure t
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
@@ -126,14 +105,14 @@
   :config
   )
 
-(leaf vertico
+(use-package vertico
   :ensure t
   :custom
-  (vertico-count . 15) ; 候補数を15に増やす
+  (vertico-count 15) ; 候補数を15に増やす
   :init
   (vertico-mode))
 
-(leaf orderless
+(use-package orderless
   :ensure t
   :init
   ;; Set completion style for Emacs
@@ -141,7 +120,7 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
-(leaf recentf
+(use-package recentf
   :config
   (setq recentf-max-saved-items 15             ; consult-bufferに表示する最近使ったファイルの最大表示数
         recentf-exclude '(".recentf" "^/ssh:") ; recentfの履歴に含ませないファイルリスト
@@ -151,16 +130,15 @@
         (run-with-idle-timer 30 t 'recentf-save-list)) ; バッファを開いて30秒以上したら履歴に登録
   (recentf-mode 1))
 
-(leaf consult
+(use-package consult
   :ensure t
   :bind (("C-x b" . consult-buffer)
          ("M-g M-g" . consult-goto-line)  ;; goto-lineをconsult-goto-lineに置き換え
          ("C-c s" . consult-line)         ;; バッファ内をキーワードで検索
          ("C-c o" . consult-outline)))    ;; アウトライン
 
-(leaf evil
+(use-package evil
   :ensure t
-  :after evil-leader
   :config
   (evil-mode 1)
   (setq evil-normal-state-cursor '(box "#EFEBEB"))
@@ -196,9 +174,8 @@
     (define-key evil-insert-state-map (kbd "C-r") 'nil)
     ))
 
-(leaf evil-leader
+(use-package evil-leader
   :ensure t
-  :require t
   :config
   ;; global-evil-leader-modeが未設定の場合のみ、有効化
   (unless (bound-and-true-p global-evil-leader-mode)
@@ -216,12 +193,12 @@
     "rg" 'org-id-get-create
     ))
 
-(leaf evil-surround
+(use-package evil-surround
   :ensure t
   :config
   (global-evil-surround-mode 1))
 
-(leaf evil-org
+(use-package evil-org
   :ensure t
   :after org evil
   :hook (org-mode-hook . evil-org-mode)
@@ -229,7 +206,7 @@
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
-(leaf yasnippet
+(use-package yasnippet
   :ensure t
   :init
   (yas-global-mode 1)
@@ -237,7 +214,7 @@
   (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
   (yas-reload-all))
 
-(leaf projectile
+(use-package projectile
   :ensure t
   :config
   (projectile-mode +1)
@@ -245,12 +222,12 @@
   (setq projectile-globally-ignored-files '("*.jpg" "*.png"))
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
-(leaf org
+(use-package org
   :custom
-  (org-directory . "~/Dropbox/org/")
-  (org-use-speed-commands . t)
-  (org-log-done . 'time)
-  (org-md-export-with-toc . nil)
+  (org-directory "~/Dropbox/org/")
+  (org-use-speed-commands t)
+  (org-log-done 'time)
+  (org-md-export-with-toc nil)
   :config
   ;; org-captureのテンプレート
   (custom-set-variables
@@ -272,9 +249,9 @@
   ("C-c c" . org-capture)
   ("C-c a" . org-agenda))
 
-(leaf org-roam
+(use-package org-roam
   :ensure t
-  :custom ((org-roam-directory . org-directory))
+  :custom ((org-roam-directory org-directory))
   :bind (("C-c n f" . org-roam-node-find)
          ("C-c n i" . org-roam-node-insert)
          ("C-c r" . org-roam-capture))
@@ -295,11 +272,11 @@
            :target (file+head "publish/${slug}.org" "#+TITLE: ${title}\n")
            :unnarrowed t))))
 
-(leaf ox-gfm
+(use-package ox-gfm
   :ensure t
   :after org)
 
-(leaf dired-toggle
+(use-package dired-toggle
   :ensure t
   :bind (("C-x -" . dired-toggle))
   :config

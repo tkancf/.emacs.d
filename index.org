@@ -104,13 +104,7 @@ xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役�
 #+END_SRC
 
 * package
-** leaf
-
-- 参考
-  - [[https://github.com/conao3/leaf.el][conao3/leaf.el: Flexible, declarative, and modern init.el package configuration]]
-  -  [[https://qiita.com/conao3/items/347d7e472afd0c58fbd7#initel%E3%81%AE%E4%BD%9C%E6%88%90][Emacs入門から始めるleaf.el入門 #Emacs - Qiita]]
-
-*** leafの初期設定
+** use-package
 
 #+BEGIN_SRC emacs-lisp
   (eval-and-compile
@@ -119,55 +113,15 @@ xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役�
                          ("melpa" . "https://melpa.org/packages/")
                          ("gnu" . "https://elpa.gnu.org/packages/")))
     (package-initialize)
-    (unless (package-installed-p 'leaf)
+    (unless (package-installed-p 'use-package)
       (package-refresh-contents)
-      (package-install 'leaf))
-
-    (leaf leaf-keywords
-      :ensure t
-      :init
-      ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
-      (leaf hydra :ensure t)
-      (leaf el-get :ensure t)
-      (leaf blackout :ensure t)
-
-      :config
-      ;; initialize leaf-keywords.el
-      (leaf-keywords-init)))
-#+END_SRC
-
-*** leaf便利パッケージ
-
-- leaf-convert
-  - プレーンなElispやuse-packageからleafへの変換機能
-    - ~M-x leaf-convert-replace-pop~, ~M-x leaf-convert-replace-region~
-- leaf-tree
-  - ~M-x leaf-tree-mode~
-
-#+BEGIN_SRC emacs-lisp
-  (leaf leaf
-    :config
-    (leaf leaf-convert :ensure t)
-    (leaf leaf-tree
-      :ensure t
-      :custom ((imenu-list-size . 30)
-               (imenu-list-position . 'left))))
-#+END_SRC
-
-- macrostep
-  - ~C-c e~ でleafマクロを展開する
-  - デバッグで使うらしい
-
-#+BEGIN_SRC emacs-lisp
-  (leaf macrostep
-    :ensure t
-    :bind (("C-c e" . macrostep-expand)))
+      (package-install 'use-package)))
 #+END_SRC
 
 ** Theme
 
 #+BEGIN_SRC emacs-lisp
-  (leaf doom-themes
+  (use-package doom-themes
     :ensure t
     :config
     ;; Global settings (defaults)
@@ -191,10 +145,9 @@ xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役�
 キーボードショートカットのヘルプを表示してくれる
 
 #+BEGIN_SRC emacs-lisp
-  (leaf which-key
+  (use-package which-key
     :ensure t
-    :leaf-defer t
-    :custom ((which-key-idle-delay . 1.0))
+    :custom ((which-key-idle-delay 1.0))
     :config
     (which-key-mode 1))
 #+END_SRC
@@ -206,14 +159,14 @@ xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役�
 [[https://github.com/minad/corfu][github.com/minad/corfu]]
 
 #+BEGIN_SRC emacs-lisp
-  (leaf corfu
+  (use-package corfu
     :ensure t
     :custom
-    ((corfu-auto . t)
-     (corfu-auto-delay . 0.1)
-     (corfu-cycle . t)
-     (corfu-auto-prefix . 2) ;; 補完候補を2文字で出す
-     (corfu-on-exact-match . nil))
+    ((corfu-auto t)
+     (corfu-auto-delay 0.1)
+     (corfu-cycle t)
+     (corfu-auto-prefix 2) ;; 補完候補を2文字で出す
+     (corfu-on-exact-match nil))
     :config
     ;; 基本設定
     (global-corfu-mode 1)
@@ -243,7 +196,7 @@ corfu向けに補完候補を提供するパッケージ
 - cape-tex: TeX コマンドからの完全な Unicode 文字。例\hbar:
 
 #+BEGIN_SRC emacs-lisp
-  (leaf cape
+  (use-package cape
     :ensure t
     :init
     (add-to-list 'completion-at-point-functions #'cape-dabbrev)
@@ -265,10 +218,10 @@ corfu向けに補完候補を提供するパッケージ
 M-xとか、C-j C-fでのファイル検索とかミニバッファでの操作がVimのUniteとかTelescopeみたいになる
 
 #+BEGIN_SRC emacs-lisp
-  (leaf vertico
+  (use-package vertico
     :ensure t
     :custom
-    (vertico-count . 15) ; 候補数を15に増やす
+    (vertico-count 15) ; 候補数を15に増やす
     :init
     (vertico-mode))
 #+END_SRC
@@ -278,7 +231,7 @@ M-xとか、C-j C-fでのファイル検索とかミニバッファでの操作�
 verticoデフォルトだと、スペース区切りでfuzzyに絞り込みできないので、それを可能にするためのパッケージ
 
 #+BEGIN_SRC emacs-lisp
-  (leaf orderless
+  (use-package orderless
     :ensure t
     :init
     ;; Set completion style for Emacs
@@ -290,7 +243,7 @@ verticoデフォルトだと、スペース区切りでfuzzyに絞り込みで�
 ** recentf
 
 #+BEGIN_SRC emacs-lisp
-  (leaf recentf
+  (use-package recentf
     :config
     (setq recentf-max-saved-items 15             ; consult-bufferに表示する最近使ったファイルの最大表示数
           recentf-exclude '(".recentf" "^/ssh:") ; recentfの履歴に含ませないファイルリスト
@@ -307,7 +260,7 @@ verticoデフォルトだと、スペース区切りでfuzzyに絞り込みで�
 Consult-bufferが便利で、カスタマイズすることで、最近開いたファイル、ブックマークしたファイルを一度に表示できるので、それをverticoで絞り込んで移動出来るようになる
 
 #+BEGIN_SRC emacs-lisp
-  (leaf consult
+  (use-package consult
     :ensure t
     :bind (("C-x b" . consult-buffer)
            ("M-g M-g" . consult-goto-line)  ;; goto-lineをconsult-goto-lineに置き換え
@@ -336,9 +289,8 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
 **** 設定
 
 #+BEGIN_SRC emacs-lisp
-  (leaf evil
+  (use-package evil
     :ensure t
-    :after evil-leader
     :config
     (evil-mode 1)
     (setq evil-normal-state-cursor '(box "#EFEBEB"))
@@ -378,25 +330,27 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
 *** evil-leader
 
 #+BEGIN_SRC emacs-lisp
-  (leaf evil-leader
+  (use-package evil-leader
     :ensure t
-    :require t
     :config
     ;; global-evil-leader-modeが未設定の場合のみ、有効化
     (unless (bound-and-true-p global-evil-leader-mode)
       (global-evil-leader-mode 1))
     ;; リーダーキーとしてスペースキーを設定
-    (evil-leader/set-leader "<SPC>")
-    (evil-leader/set-key
-      "<SPC>" 'execute-extended-command
-      "b" 'consult-buffer
-      "c" 'org-capture
-      "a" 'org-agenda
-      "rc" 'org-roam-capture
-      "rf" 'org-roam-node-find
-      "ri" 'org-roam-node-insert
-      "rg" 'org-id-get-create
-      ))
+    (evil-leader/set-leader "<SPC>"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (evil-leader/set-key
+    "<SPC>" 'execute-extended-command
+    "b" 'consult-buffer
+    "c" 'org-capture
+    "a" 'org-agenda
+    "rc" 'org-roam-capture
+    "rf" 'org-roam-node-find
+    "ri" 'org-roam-node-insert
+    "rg" 'org-id-get-create
+    ))
 #+END_SRC
 
 *** evil-surround
@@ -404,7 +358,7 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
 vim-surroundみたいな動きを可能にする
 
 #+BEGIN_SRC emacs-lisp
-  (leaf evil-surround
+  (use-package evil-surround
     :ensure t
     :config
     (global-evil-surround-mode 1))
@@ -415,9 +369,8 @@ vim-surroundみたいな動きを可能にする
 参考: [[https://github.com/Somelauw/evil-org-mode][github.com/Somelauw/evil-org-mode]]
 
 #+BEGIN_SRC emacs-lisp
-  (leaf evil-org
+  (use-package evil-org
     :ensure t
-    :after org evil
     :hook (org-mode-hook . evil-org-mode)
     :config
     (require 'evil-org-agenda)
@@ -431,7 +384,7 @@ vim-surroundみたいな動きを可能にする
 スニペット自体は ~~/.emacs.d/snippets/~ 配下
 
 #+BEGIN_SRC emacs-lisp
-  (leaf yasnippet
+  (use-package yasnippet
     :ensure t
     :init
     (yas-global-mode 1)
@@ -443,7 +396,7 @@ vim-surroundみたいな動きを可能にする
 ** projectile
 
 #+BEGIN_SRC emacs-lisp
-  (leaf projectile
+  (use-package projectile
     :ensure t
     :config
     (projectile-mode +1)
@@ -456,12 +409,12 @@ vim-surroundみたいな動きを可能にする
 *** org-modeの基本設定
 
 #+BEGIN_SRC emacs-lisp
-  (leaf org
+  (use-package org
     :custom
-    (org-directory . "~/Dropbox/org/")
-    (org-use-speed-commands . t)
-    (org-log-done . 'time)
-    (org-md-export-with-toc . nil)
+    (org-directory "~/Dropbox/org/")
+    (org-use-speed-commands t)
+    (org-log-done 'time)
+    (org-md-export-with-toc nil)
     :config
     ;; org-captureのテンプレート
     (custom-set-variables
@@ -489,9 +442,9 @@ vim-surroundみたいな動きを可能にする
 org-roamの設定
 
 #+BEGIN_SRC emacs-lisp
-  (leaf org-roam
+  (use-package org-roam
     :ensure t
-    :custom ((org-roam-directory . org-directory))
+    :custom ((org-roam-directory org-directory))
     :bind (("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert)
            ("C-c r" . org-roam-capture))
@@ -516,9 +469,9 @@ org-roamの設定
 ** GitHub Flavored Markdownをエクスポートするためのパッケージ
 
 #+BEGIN_SRC emacs-lisp
-(leaf ox-gfm
-  :ensure t
-  :after org)
+  (use-package ox-gfm
+    :ensure t
+    :after org)
 #+END_SRC
 
 ** dired
@@ -527,7 +480,7 @@ org-roamの設定
 画面左にdiredを開くコマンド
 
 #+BEGIN_SRC emacs-lisp
-  (leaf dired-toggle
+  (use-package dired-toggle
     :ensure t
     :bind (("C-x -" . dired-toggle))
     :config
