@@ -50,10 +50,6 @@
     (package-refresh-contents)
     (package-install 'use-package)))
 
-
-
-
-
 (use-package doom-themes
   :ensure t
   :config
@@ -181,17 +177,18 @@
   (unless (bound-and-true-p global-evil-leader-mode)
     (global-evil-leader-mode 1))
   ;; リーダーキーとしてスペースキーを設定
-  (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-key
-    "<SPC>" 'execute-extended-command
-    "b" 'consult-buffer
-    "c" 'org-capture
-    "a" 'org-agenda
-    "rc" 'org-roam-capture
-    "rf" 'org-roam-node-find
-    "ri" 'org-roam-node-insert
-    "rg" 'org-id-get-create
-    ))
+  (evil-leader/set-leader "<SPC>"))
+
+(evil-leader/set-key
+  "<SPC>" 'execute-extended-command
+  "b" 'consult-buffer
+  "c" 'org-capture
+  "a" 'org-agenda
+  "rc" 'org-roam-capture
+  "rf" 'org-roam-node-find
+  "ri" 'org-roam-node-insert
+  "rg" 'org-id-get-create
+  ))
 
 (use-package evil-surround
   :ensure t
@@ -200,8 +197,8 @@
 
 (use-package evil-org
   :ensure t
-  :after org evil
-  :hook (org-mode-hook . evil-org-mode)
+  :after org
+  :hook (org-mode . (lambda () evil-org-mode))
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))

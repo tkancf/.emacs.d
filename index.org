@@ -371,7 +371,8 @@ vim-surroundみたいな動きを可能にする
 #+BEGIN_SRC emacs-lisp
   (use-package evil-org
     :ensure t
-    :hook (org-mode-hook . evil-org-mode)
+    :after org
+    :hook (org-mode . (lambda () evil-org-mode))
     :config
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
