@@ -63,7 +63,7 @@
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   (doom-themes-neotree-config)
   ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  '(doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
   (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
@@ -120,9 +120,8 @@
   :config
   (setq recentf-max-saved-items 15             ; consult-bufferに表示する最近使ったファイルの最大表示数
         recentf-exclude '(".recentf" "^/ssh:") ; recentfの履歴に含ませないファイルリスト
-        recentf-auto-cleanup 'never)           ; recentfの履歴を削除しない
-
-  (setq recentf-auto-save-timer
+        recentf-auto-cleanup 'never           ; recentfの履歴を削除しない
+        recentf-auto-save-timer
         (run-with-idle-timer 30 t 'recentf-save-list)) ; バッファを開いて30秒以上したら履歴に登録
   (recentf-mode 1))
 
@@ -181,14 +180,13 @@
 
 (evil-leader/set-key
   "<SPC>" 'execute-extended-command
-  "b" 'consult-buffer
   "c" 'org-capture
   "a" 'org-agenda
   "rc" 'org-roam-capture
   "rf" 'org-roam-node-find
   "ri" 'org-roam-node-insert
   "rg" 'org-id-get-create
-  ))
+  )
 
 (use-package evil-surround
   :ensure t
@@ -240,8 +238,7 @@
        ("j" "Journal" entry (file ,(concat org-directory "journal.org"))
         "* %<%Y-%m-%d>\n%?\n%i\n"))))
   ;; org-agendaのファイル
-  '(org-agenda-files (directory-files-recursively (expand-file-name org-directory) "\\.org$"))
-  (setq org-agenda-files (append org-agenda-files '("~/Dropbox/org/inbox.org")))
+  (setq org-agenda-files (directory-files-recursively (expand-file-name org-directory) "\\.org$"))
   :bind
   ("C-c c" . org-capture)
   ("C-c a" . org-agenda))
@@ -253,7 +250,7 @@
          ("C-c n i" . org-roam-node-insert)
          ("C-c r" . org-roam-capture))
   :config
-  (org-roam-setup)
+  '(org-roam-setup)
   ;; キャプチャテンプレートの設定
   (setq org-roam-capture-templates
         '(("f" "Fleeting(一時メモ)" plain "%?"
