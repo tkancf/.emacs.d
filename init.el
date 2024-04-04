@@ -264,10 +264,10 @@
        ("n" "Memo with Link" entry (file+headline ,(concat org-directory "memo.org") "Memo")
         "* %?\nEntered on %U\n  %i\n  %a")
        ("j" "Journal" entry (file ,(concat org-directory "journal.org"))
-        "* %<%Y-%m-%d>\n%?\n%i\n")))
-   ;; org-agendaのファイル
-   '(org-agenda-files (list (concat org-directory "todo.org")
-                            (concat org-directory "journal.org"))))
+        "* %<%Y-%m-%d>\n%?\n%i\n"))))
+  ;; org-agendaのファイル
+  '(org-agenda-files (directory-files-recursively (expand-file-name org-directory) "\\.org$"))
+  (setq org-agenda-files (append org-agenda-files '("~/Dropbox/org/inbox.org")))
   :bind
   ("C-c c" . org-capture)
   ("C-c a" . org-agenda))
