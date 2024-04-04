@@ -358,6 +358,7 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
 
 vim-surroundみたいな動きを可能にする
 
+#+BEGIN_SRC emacs-lisp :results none
   (use-package evil-surround
     :ensure t
     :config
