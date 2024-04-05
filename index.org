@@ -528,9 +528,9 @@ org-roamの設定
 #+BEGIN_SRC emacs-lisp :results none
   (use-package dmacro
     :ensure t
-    :bind (("s-t" . dmacro-exec))
+    :custom `((dmacro-key . ,(kbd "C-S-e")))
     :config
-    (dmacro-mode 1))
+    (global-dmacro-mode))
 #+END_SRC
 
 ** elscreen: 画面管理
