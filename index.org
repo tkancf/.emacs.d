@@ -253,6 +253,18 @@ verticoデフォルトだと、スペース区切りでfuzzyに絞り込みで�
           completion-category-overrides '((file (styles . (partial-completion))))))
 #+END_SRC
 
+*** marginalia
+
+consultで一覧表示した時に、コマンドの説明文とかが表示される
+
+#+BEGIN_SRC emacs-lisp
+  (use-package marginalia
+  :ensure t
+  :init
+  (marginalia-mode)
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle)))
+#+END_SRC
 ** recentf
 
 #+BEGIN_SRC emacs-lisp :results none
