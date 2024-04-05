@@ -40,6 +40,13 @@
 
 (define-key key-translation-map (kbd "s-j") (kbd "M-x"))
 
+(defun insert-asterisk ()
+  "Insert an asterisk at the cursor position."
+  (interactive)
+  (insert "*"))
+
+(global-set-key (kbd "s-k") 'insert-asterisk)
+
 (eval-and-compile
   (customize-set-variable
    'package-archives '(("org" . "https://orgmode.org/elpa/")
@@ -63,7 +70,7 @@
   ;; Enable custom neotree theme (all-the-icons must be installed!)
   (doom-themes-neotree-config)
   ;; or for treemacs users
-  '(doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
   (doom-themes-treemacs-config)
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config))
@@ -116,18 +123,27 @@
         completion-category-defaults nil
         completion-category-overrides '((file (styles . (partial-completion))))))
 
+(use-package marginalia
+:ensure t
+:init
+(marginalia-mode)
+:bind (:map minibuffer-local-map
+            ("M-A" . marginalia-cycle)))
+
 (use-package recentf
   :config
   (setq recentf-max-saved-items 15             ; consult-bufferに表示する最近使ったファイルの最大表示数
         recentf-exclude '(".recentf" "^/ssh:") ; recentfの履歴に含ませないファイルリスト
-        recentf-auto-cleanup 'never           ; recentfの履歴を削除しない
-        recentf-auto-save-timer
+        recentf-auto-cleanup 'never)           ; recentfの履歴を削除しない
+
+  (setq recentf-auto-save-timer
         (run-with-idle-timer 30 t 'recentf-save-list)) ; バッファを開いて30秒以上したら履歴に登録
   (recentf-mode 1))
 
 (use-package consult
   :ensure t
   :bind (("C-x b" . consult-buffer)
+         ("s-b" . consult-buffer)
          ("M-g M-g" . consult-goto-line)  ;; goto-lineをconsult-goto-lineに置き換え
          ("C-c s" . consult-line)         ;; バッファ内をキーワードで検索
          ("C-c o" . consult-outline)))    ;; アウトライン
@@ -250,7 +266,7 @@
          ("C-c n i" . org-roam-node-insert)
          ("C-c r" . org-roam-capture))
   :config
-  '(org-roam-setup)
+  (org-roam-setup)
   ;; キャプチャテンプレートの設定
   (setq org-roam-capture-templates
         '(("f" "Fleeting(一時メモ)" plain "%?"
@@ -275,6 +291,28 @@
   :bind (("C-x -" . dired-toggle))
   :config
   )
+
+(use-package autorevert
+:ensure t
+:config
+(setq auto-revert-interval 1) ; チェック間隔を1秒に設定
+(global-auto-revert-mode 1))  ; 全てのファイルバッファに対して自動リバートを有効にする
+
+(use-package dmacro
+  :ensure t
+  :bind (("s-t" . dmacro-exec))
+  :config
+  (dmacro-mode 1))
+
+(defvar my/fav-commands
+  '(org-id-get-create
+    org-toggle-inline-images
+    eval-print-last-sexp))
+
+(defun my/execute-fav-command ()
+  (interactive)
+  (let ((command (completing-read "Command: " my/fav-commands nil t)))
+    (call-interactively (intern command))))
 
 (provide 'init)
 

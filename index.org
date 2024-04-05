@@ -513,9 +513,28 @@ org-roamの設定
     )
 #+END_SRC
 
-* provide
 
 参考: [[https://qiita.com/conao3/items/347d7e472afd0c58fbd7#initel%E3%81%AE%E4%BD%9C%E6%88%90][Emacs入門から始めるleaf.el入門 #Emacs - Qiita]]
+
+* function
+
+** お気に入りのコマンドだけ一覧する
+
+- ~my/fav-commands~ に好きなコマンドを追加する
+
+#+BEGIN_SRC emacs-lisp :results none
+  (defvar my/fav-commands
+    '(org-id-get-create
+      org-toggle-inline-images
+      eval-print-last-sexp))
+
+  (defun my/execute-fav-command ()
+    (interactive)
+    (let ((command (completing-read "Command: " my/fav-commands nil t)))
+      (call-interactively (intern command))))
+#+END_SRC
+
+* provide
 
 #+BEGIN_SRC emacs-lisp :results none
   (provide 'init)
