@@ -212,8 +212,8 @@
 (use-package evil-org
   :ensure t
   :after org
-  :hook (org-mode . (lambda () evil-org-mode))
   :config
+  (add-hook 'org-mode-hook 'evil-org-mode)
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
@@ -300,45 +300,47 @@
 
 (use-package dmacro
   :ensure t
-  :bind (("s-t" . dmacro-exec))
+  :custom `((dmacro-key . ,(kbd "C-S-e")))
   :config
-  (dmacro-mode 1))
+  (global-dmacro-mode))
 
 (use-package elscreen
   :ensure t
   :init
   (elscreen-start)
   :config
-  (setq elscreen-prefix-key (kbd "s-e"))
-  (run-with-idle-timer 0.3 nil #'elscreen-add-subdirs-to-menu)
-  :bind
-  (("s-e n" . elscreen-create)
-   ("s-e N" . elscreen-clone)
-   ("s-e k" . elscreen-kill)
-   ("s-e K" . elscreen-kill-screen-and-buffers)
-   ("s-e w" . elscreen-start-swap-window)
-   ("s-e W" . elscreen-swap-window)
-   ("s-e m" . elscreen-toggle-modify-mode)
-   ("s-e g" . elscreen-goto)
-   ("s-e G" . elscreen-jump)
-   ("s-e b" . elscreen-select-previous-buffer)
-   ("s-e f" . elscreen-select-next-buffer)
-   ("s-e C-n" . elscreen-next)
-   ("s-e C-p" . elscreen-previous)
-   ("s-e C-f" . elscreen-next)
-   ("s-e C-b" . elscreen-previous)
-   ("s-e /" . elscreen-swap-window-screen)
-   ("s-e c" . elscreen-clone-screen)
-   ("s-e 0" . elscreen-goto-0)
-   ("s-e 1" . elscreen-goto-1)
-   ("s-e 2" . elscreen-goto-2)
-   ("s-e 3" . elscreen-goto-3)
-   ("s-e 4" . elscreen-goto-4)
-   ("s-e 5" . elscreen-goto-5)
-   ("s-e 6" . elscreen-goto-6)
-   ("s-e 7" . elscreen-goto-7)
-   ("s-e 8" . elscreen-goto-8)
-   ("s-e 9" . elscreen-goto-9)))
+  ;; Define 's-e' as a prefix command
+  (define-prefix-command 's-e-prefix)
+  (global-set-key (kbd "s-e") 's-e-prefix)
+
+  ;; Adjusting the previous configuration to use 's-e' prefix
+  (define-key s-e-prefix (kbd "c") 'elscreen-create)
+  (define-key s-e-prefix (kbd "x") 'elscreen-clone)
+  (define-key s-e-prefix (kbd "k") 'elscreen-kill)
+  (define-key s-e-prefix (kbd "K") 'elscreen-kill-screen-and-buffers)
+  (define-key s-e-prefix (kbd "w") 'elscreen-start-swap-window)
+  (define-key s-e-prefix (kbd "W") 'elscreen-swap-window)
+  (define-key s-e-prefix (kbd "m") 'elscreen-toggle-modify-mode)
+  (define-key s-e-prefix (kbd "g") 'elscreen-goto)
+  (define-key s-e-prefix (kbd "G") 'elscreen-jump)
+  (define-key s-e-prefix (kbd "b") 'elscreen-select-previous-buffer)
+  (define-key s-e-prefix (kbd "f") 'elscreen-select-next-buffer)
+  (define-key s-e-prefix (kbd "n") 'elscreen-next)
+  (define-key s-e-prefix (kbd "p") 'elscreen-previous)
+  (define-key s-e-prefix (kbd "C-f") 'elscreen-next)
+  (define-key s-e-prefix (kbd "C-b") 'elscreen-previous)
+  (define-key s-e-prefix (kbd "/") 'elscreen-swap-window-screen)
+  (define-key s-e-prefix (kbd "c") 'elscreen-clone-screen)
+  (define-key s-e-prefix (kbd "0") 'elscreen-goto-0)
+  (define-key s-e-prefix (kbd "1") 'elscreen-goto-1)
+  (define-key s-e-prefix (kbd "2") 'elscreen-goto-2)
+  (define-key s-e-prefix (kbd "3") 'elscreen-goto-3)
+  (define-key s-e-prefix (kbd "4") 'elscreen-goto-4)
+  (define-key s-e-prefix (kbd "5") 'elscreen-goto-5)
+  (define-key s-e-prefix (kbd "6") 'elscreen-goto-6)
+  (define-key s-e-prefix (kbd "7") 'elscreen-goto-7)
+  (define-key s-e-prefix (kbd "8") 'elscreen-goto-8)
+  (define-key s-e-prefix (kbd "9") 'elscreen-goto-9))
 
 (defvar my/fav-commands
   '(org-id-get-create ; org-roam id付与
@@ -350,6 +352,7 @@
   (interactive)
   (let ((command (completing-read "Command: " my/fav-commands nil t)))
     (call-interactively (intern command))))
+(global-set-key (kbd "s-n") 'my/execute-fav-command)
 
 (provide 'init)
 

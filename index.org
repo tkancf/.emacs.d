@@ -399,8 +399,8 @@ vim-surroundみたいな動きを可能にする
   (use-package evil-org
     :ensure t
     :after org
-    :hook (org-mode . (lambda () evil-org-mode))
     :config
+    (add-hook 'org-mode-hook 'evil-org-mode)
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
 #+END_SRC
