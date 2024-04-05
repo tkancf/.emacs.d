@@ -304,10 +304,47 @@
   :config
   (dmacro-mode 1))
 
+(use-package elscreen
+  :ensure t
+  :init
+  (elscreen-start)
+  :config
+  (setq elscreen-prefix-key (kbd "s-e"))
+  (run-with-idle-timer 0.3 nil #'elscreen-add-subdirs-to-menu)
+  :bind
+  (("s-e n" . elscreen-create)
+   ("s-e N" . elscreen-clone)
+   ("s-e k" . elscreen-kill)
+   ("s-e K" . elscreen-kill-screen-and-buffers)
+   ("s-e w" . elscreen-start-swap-window)
+   ("s-e W" . elscreen-swap-window)
+   ("s-e m" . elscreen-toggle-modify-mode)
+   ("s-e g" . elscreen-goto)
+   ("s-e G" . elscreen-jump)
+   ("s-e b" . elscreen-select-previous-buffer)
+   ("s-e f" . elscreen-select-next-buffer)
+   ("s-e C-n" . elscreen-next)
+   ("s-e C-p" . elscreen-previous)
+   ("s-e C-f" . elscreen-next)
+   ("s-e C-b" . elscreen-previous)
+   ("s-e /" . elscreen-swap-window-screen)
+   ("s-e c" . elscreen-clone-screen)
+   ("s-e 0" . elscreen-goto-0)
+   ("s-e 1" . elscreen-goto-1)
+   ("s-e 2" . elscreen-goto-2)
+   ("s-e 3" . elscreen-goto-3)
+   ("s-e 4" . elscreen-goto-4)
+   ("s-e 5" . elscreen-goto-5)
+   ("s-e 6" . elscreen-goto-6)
+   ("s-e 7" . elscreen-goto-7)
+   ("s-e 8" . elscreen-goto-8)
+   ("s-e 9" . elscreen-goto-9)))
+
 (defvar my/fav-commands
-  '(org-id-get-create
-    org-toggle-inline-images
-    eval-print-last-sexp))
+  '(org-id-get-create ; org-roam id付与
+    org-toggle-inline-images ; org-modeインライン画像
+    toggle-truncate-lines ; 行折り返し
+    ))
 
 (defun my/execute-fav-command ()
   (interactive)

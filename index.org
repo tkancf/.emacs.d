@@ -288,6 +288,7 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
   (use-package consult
     :ensure t
     :bind (("C-x b" . consult-buffer)
+           ("s-b" . consult-buffer)
            ("M-g M-g" . consult-goto-line)  ;; goto-lineをconsult-goto-lineに置き換え
            ("C-c s" . consult-line)         ;; バッファ内をキーワードで検索
            ("C-c o" . consult-outline)))    ;; アウトライン
@@ -492,7 +493,7 @@ org-roamの設定
              :unnarrowed t))))
 #+END_SRC
 
-** GitHub Flavored Markdownをエクスポートするためのパッケージ
+** ox-gfm: GitHub Flavored Markdownをエクスポートするためのパッケージ
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package ox-gfm
@@ -500,7 +501,7 @@ org-roamの設定
     :after org)
 #+END_SRC
 
-** dired
+** dired: ファイラ
 *** dired-toggle
 
 画面左にdiredを開くコマンド
@@ -532,6 +533,47 @@ org-roamの設定
     (dmacro-mode 1))
 #+END_SRC
 
+** elscreen: 画面管理
+
+#+BEGIN_SRC emacs-lisp :results none
+  (use-package elscreen
+    :ensure t
+    :init
+    (elscreen-start)
+    :config
+    ;; Define 's-e' as a prefix command
+    (define-prefix-command 's-e-prefix)
+    (global-set-key (kbd "s-e") 's-e-prefix)
+  
+    ;; Adjusting the previous configuration to use 's-e' prefix
+    (define-key s-e-prefix (kbd "c") 'elscreen-create)
+    (define-key s-e-prefix (kbd "x") 'elscreen-clone)
+    (define-key s-e-prefix (kbd "k") 'elscreen-kill)
+    (define-key s-e-prefix (kbd "K") 'elscreen-kill-screen-and-buffers)
+    (define-key s-e-prefix (kbd "w") 'elscreen-start-swap-window)
+    (define-key s-e-prefix (kbd "W") 'elscreen-swap-window)
+    (define-key s-e-prefix (kbd "m") 'elscreen-toggle-modify-mode)
+    (define-key s-e-prefix (kbd "g") 'elscreen-goto)
+    (define-key s-e-prefix (kbd "G") 'elscreen-jump)
+    (define-key s-e-prefix (kbd "b") 'elscreen-select-previous-buffer)
+    (define-key s-e-prefix (kbd "f") 'elscreen-select-next-buffer)
+    (define-key s-e-prefix (kbd "n") 'elscreen-next)
+    (define-key s-e-prefix (kbd "p") 'elscreen-previous)
+    (define-key s-e-prefix (kbd "C-f") 'elscreen-next)
+    (define-key s-e-prefix (kbd "C-b") 'elscreen-previous)
+    (define-key s-e-prefix (kbd "/") 'elscreen-swap-window-screen)
+    (define-key s-e-prefix (kbd "c") 'elscreen-clone-screen)
+    (define-key s-e-prefix (kbd "0") 'elscreen-goto-0)
+    (define-key s-e-prefix (kbd "1") 'elscreen-goto-1)
+    (define-key s-e-prefix (kbd "2") 'elscreen-goto-2)
+    (define-key s-e-prefix (kbd "3") 'elscreen-goto-3)
+    (define-key s-e-prefix (kbd "4") 'elscreen-goto-4)
+    (define-key s-e-prefix (kbd "5") 'elscreen-goto-5)
+    (define-key s-e-prefix (kbd "6") 'elscreen-goto-6)
+    (define-key s-e-prefix (kbd "7") 'elscreen-goto-7)
+    (define-key s-e-prefix (kbd "8") 'elscreen-goto-8)
+    (define-key s-e-prefix (kbd "9") 'elscreen-goto-9))
+#+END_SRC
 
 * function
 
@@ -541,14 +583,16 @@ org-roamの設定
 
 #+BEGIN_SRC emacs-lisp :results none
   (defvar my/fav-commands
-    '(org-id-get-create
-      org-toggle-inline-images
-      eval-print-last-sexp))
+    '(org-id-get-create ; org-roam id付与
+      org-toggle-inline-images ; org-modeインライン画像
+      toggle-truncate-lines ; 行折り返し
+      ))
 
   (defun my/execute-fav-command ()
     (interactive)
     (let ((command (completing-read "Command: " my/fav-commands nil t)))
       (call-interactively (intern command))))
+  (global-set-key (kbd "s-n") 'my/execute-fav-command)
 #+END_SRC
 
 * provide
