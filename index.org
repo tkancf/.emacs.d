@@ -513,8 +513,25 @@ org-roamの設定
     )
 #+END_SRC
 
+** autorevert: Emacsの外部でファイルが更新されたら自動読み込み
 
-参考: [[https://qiita.com/conao3/items/347d7e472afd0c58fbd7#initel%E3%81%AE%E4%BD%9C%E6%88%90][Emacs入門から始めるleaf.el入門 #Emacs - Qiita]]
+#+BEGIN_SRC emacs-lisp :results none
+  (use-package autorevert
+  :ensure t
+  :config
+  (setq auto-revert-interval 1) ; チェック間隔を1秒に設定
+  (global-auto-revert-mode 1))  ; 全てのファイルバッファに対して自動リバートを有効にする
+#+END_SRC
+
+** dracro: ミニマクロ
+#+BEGIN_SRC emacs-lisp :results none
+  (use-package dmacro
+    :ensure t
+    :bind (("s-t" . dmacro-exec))
+    :config
+    (dmacro-mode 1))
+#+END_SRC
+
 
 * function
 
