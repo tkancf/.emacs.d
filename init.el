@@ -286,7 +286,7 @@
   :ensure t
   :hook (org-mode . org-modern-mode))
 
-(use-package grip-mode
+(use-package org-preview-html
   :ensure t)
 
 (use-package ox-gfm
@@ -338,11 +338,11 @@
   (define-key s-e-prefix (kbd "9") 'elscreen-goto-9))
 
 (defvar my/fav-commands
-  '(org-id-get-create ; org-roam id付与
-    org-toggle-inline-images ; org-modeインライン画像
-    toggle-truncate-lines ; 行折り返し
-    global-org-modern-mode ; org-modern
-    grip-mode ; org ファイルプレビュー
+  '(org-id-get-create ; org-roam ID付与
+    org-toggle-inline-images ; org-modeインライン画像表示
+    toggle-truncate-lines
+    global-org-modern-mode
+    org-preview-html-mode
     ))
 
 (defun my/execute-fav-command ()

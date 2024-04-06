@@ -12,3 +12,6 @@ eshell
 url
 index.html
 index.md
+.emacs.desktop.lock
+.emacs.desktop
+*.html

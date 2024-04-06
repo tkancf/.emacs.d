@@ -1,7 +1,16 @@
 * 概要
 
-Emacsのconfig
-Make buildでorgファイルを元に、init.elを生成する
+Emacsのconfigファイルです。\\
+orgファイルから設定を生成して利用します。
+
+** 利用方法
+
+~make build~ すると ~init.org~ から ~init.el~ が生成され、その後init.elがコンパイルされる
+
+** 全体のファイル構成
+
+- init.org
+  - 更新する際は基本的にこのファイルを更新します。
 
 * Initialize
 
@@ -503,10 +512,10 @@ org-roamの設定
     :hook (org-mode . org-modern-mode))
 #+END_SRC
 
-*** grip-mode: orgファイルのプレビュー
+*** org-preview-html: orgファイルのプレビュー
 
 #+BEGIN_SRC emacs-lisp :results none
-  (use-package grip-mode
+  (use-package org-preview-html
     :ensure t)
                 #+END_SRC
 
@@ -588,11 +597,11 @@ org-roamの設定
 
 #+BEGIN_SRC emacs-lisp :results none
   (defvar my/fav-commands
-    '(org-id-get-create ; org-roam id付与
-      org-toggle-inline-images ; org-modeインライン画像
-      toggle-truncate-lines ; 行折り返し
-      global-org-modern-mode ; org-modern
-      grip-mode ; org ファイルプレビュー
+    '(org-id-get-create ; org-roam ID付与
+      org-toggle-inline-images ; org-modeインライン画像表示
+      toggle-truncate-lines
+      global-org-modern-mode
+      org-preview-html-mode
       ))
 
   (defun my/execute-fav-command ()
