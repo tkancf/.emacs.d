@@ -8,3 +8,4 @@ bookmarks~
 *.eld
 org-roam.db
 .org-id-locations
+eshell
