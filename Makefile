@@ -4,7 +4,7 @@ EMACS ?= emacs
 
 .PHONY: build
 build: ## Build emacs config
-	$(EMACS) -Q --batch --eval "(progn (require 'ob-tangle) (org-babel-tangle-file \"./index.org\" \"./init.el\" \"emacs-lisp\"))"
+	$(EMACS) -Q --batch --eval "(progn (require 'ob-tangle) (org-babel-tangle-file \"./init.org\" \"./init.el\" \"emacs-lisp\"))"
 	$(EMACS) -Q --batch -f batch-byte-compile init.el
 
 .PHONY: help

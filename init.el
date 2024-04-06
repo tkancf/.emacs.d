@@ -124,11 +124,11 @@
         completion-category-overrides '((file (styles . (partial-completion))))))
 
 (use-package marginalia
-:ensure t
-:init
-(marginalia-mode)
-:bind (:map minibuffer-local-map
-            ("M-A" . marginalia-cycle)))
+  :ensure t
+  :init
+  (marginalia-mode)
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle)))
 
 (use-package recentf
   :config
@@ -282,6 +282,13 @@
            :target (file+head "publish/${slug}.org" "#+TITLE: ${title}\n")
            :unnarrowed t))))
 
+(use-package org-modern
+  :ensure t
+  :hook (org-mode . org-modern-mode))
+
+(use-package grip-mode
+  :ensure t)
+
 (use-package ox-gfm
   :ensure t
   :after org)
@@ -293,10 +300,10 @@
   )
 
 (use-package autorevert
-:ensure t
-:config
-(setq auto-revert-interval 1) ; チェック間隔を1秒に設定
-(global-auto-revert-mode 1))  ; 全てのファイルバッファに対して自動リバートを有効にする
+  :ensure t
+  :config
+  (setq auto-revert-interval 1) ; チェック間隔を1秒に設定
+  (global-auto-revert-mode 1))  ; 全てのファイルバッファに対して自動リバートを有効にする
 
 (use-package dmacro
   :ensure t
@@ -315,22 +322,10 @@
 
   ;; Adjusting the previous configuration to use 's-e' prefix
   (define-key s-e-prefix (kbd "c") 'elscreen-create)
-  (define-key s-e-prefix (kbd "x") 'elscreen-clone)
-  (define-key s-e-prefix (kbd "k") 'elscreen-kill)
-  (define-key s-e-prefix (kbd "K") 'elscreen-kill-screen-and-buffers)
-  (define-key s-e-prefix (kbd "w") 'elscreen-start-swap-window)
-  (define-key s-e-prefix (kbd "W") 'elscreen-swap-window)
-  (define-key s-e-prefix (kbd "m") 'elscreen-toggle-modify-mode)
-  (define-key s-e-prefix (kbd "g") 'elscreen-goto)
-  (define-key s-e-prefix (kbd "G") 'elscreen-jump)
-  (define-key s-e-prefix (kbd "b") 'elscreen-select-previous-buffer)
-  (define-key s-e-prefix (kbd "f") 'elscreen-select-next-buffer)
   (define-key s-e-prefix (kbd "n") 'elscreen-next)
   (define-key s-e-prefix (kbd "p") 'elscreen-previous)
-  (define-key s-e-prefix (kbd "C-f") 'elscreen-next)
-  (define-key s-e-prefix (kbd "C-b") 'elscreen-previous)
-  (define-key s-e-prefix (kbd "/") 'elscreen-swap-window-screen)
-  (define-key s-e-prefix (kbd "c") 'elscreen-clone-screen)
+  (define-key s-e-prefix (kbd "k") 'elscreen-kill)
+  (define-key s-e-prefix (kbd "K") 'elscreen-kill-screen-and-buffers)
   (define-key s-e-prefix (kbd "0") 'elscreen-goto-0)
   (define-key s-e-prefix (kbd "1") 'elscreen-goto-1)
   (define-key s-e-prefix (kbd "2") 'elscreen-goto-2)
@@ -346,6 +341,8 @@
   '(org-id-get-create ; org-roam id付与
     org-toggle-inline-images ; org-modeインライン画像
     toggle-truncate-lines ; 行折り返し
+    global-org-modern-mode ; org-modern
+    grip-mode ; org ファイルプレビュー
     ))
 
 (defun my/execute-fav-command ()
@@ -356,40 +353,7 @@
 
 (provide 'init)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-capture-templates
-   `(("u" "Todo with Link" entry
-      (file+headline ,(concat org-directory "todo.org")
-		     "Todo")
-      "* TODO %?\12  %i\12  %a")
-     ("t" "Todo" entry
-      (file+headline ,(concat org-directory "todo.org")
-		     "Todo")
-      "* TODO %?\12 SCHEDULED: %t\12")
-     ("m" "Memo" entry
-      (file+headline ,(concat org-directory "memo.org")
-		     "Memo")
-      "* %?\12")
-     ("n" "Memo with Link" entry
-      (file+headline ,(concat org-directory "memo.org")
-		     "Memo")
-      "* %?\12Entered on %U\12  %i\12  %a")
-     ("j" "Journal" entry
-      (file ,(concat org-directory "journal.org"))
-      "* %<%Y-%m-%d>\12%?\12%i\12")))
- '(package-selected-packages
-   '(org-modern yasnippet which-key vertico projectile ox-gfm org-roam orderless marginalia evil-surround evil-org evil-leader elscreen doom-themes dmacro dired-toggle corfu consult cape)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
- ;; Local Variables:
+;; Local Variables:
 ;; indent-tabs-mode: nil
 ;; End:
 

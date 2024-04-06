@@ -21,6 +21,8 @@ Make buildでorgファイルを元に、init.elを生成する
 
 ** スタートアップメッセージ非表示
 
+スタート画面にアイコンとか別にいらないので削除
+
 #+BEGIN_SRC emacs-lisp :results none
   (setq inhibit-startup-message t)
 #+END_SRC
@@ -501,6 +503,13 @@ org-roamの設定
     :hook (org-mode . org-modern-mode))
 #+END_SRC
 
+*** grip-mode: orgファイルのプレビュー
+
+#+BEGIN_SRC emacs-lisp :results none
+  (use-package grip-mode
+    :ensure t)
+                #+END_SRC
+
 ** ox-gfm: GitHub Flavored Markdownをエクスポートするためのパッケージ
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -583,6 +592,7 @@ org-roamの設定
       org-toggle-inline-images ; org-modeインライン画像
       toggle-truncate-lines ; 行折り返し
       global-org-modern-mode ; org-modern
+      grip-mode ; org ファイルプレビュー
       ))
 
   (defun my/execute-fav-command ()
