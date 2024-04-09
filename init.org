@@ -268,7 +268,7 @@ verticoデフォルトだと、スペース区切りでfuzzyに絞り込みで�
 
 consultで一覧表示した時に、コマンドの説明文とかが表示される
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :results none
   (use-package marginalia
     :ensure t
     :init
@@ -276,6 +276,7 @@ consultで一覧表示した時に、コマンドの説明文とかが表示さ�
     :bind (:map minibuffer-local-map
                 ("M-A" . marginalia-cycle)))
 #+END_SRC
+
 ** recentf
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -587,6 +588,28 @@ org-roamの設定
     (define-key s-e-prefix (kbd "7") 'elscreen-goto-7)
     (define-key s-e-prefix (kbd "8") 'elscreen-goto-8)
     (define-key s-e-prefix (kbd "9") 'elscreen-goto-9))
+#+END_SRC
+
+** migemo: ローマ字入力のままで日本語をインクリメンタル検索
+
+cmigemoはhomebrewでインストールできた。\\
+インストールコマンドは下記
+
+#+BEGIN_SRC bash
+  brew install cmigemo
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results none
+  (use-package migemo
+  :ensure t
+  :config
+  (setq migemo-command "cmigemo")
+  (setq migemo-options '("-q" "--emacs"))
+  (setq migemo-dictionary "/opt/homebrew/share/migemo/utf-8/migemo-dict")
+  (setq migemo-user-dictionary nil)
+  (setq migemo-regex-dictionary nil)
+  (setq migemo-coding-system 'utf-8-unix)
+  (migemo-init))
 #+END_SRC
 
 * function
