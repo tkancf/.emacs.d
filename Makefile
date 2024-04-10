@@ -4,8 +4,8 @@ EMACS ?= emacs
 
 .PHONY: build
 build: ## Build emacs config
-	$(EMACS) -Q --batch --eval "(progn (require 'ob-tangle) (org-babel-tangle-file \"./init.org\" \"./init.el\" \"emacs-lisp\"))"
-	$(EMACS) -Q --batch -f batch-byte-compile init.el
+	@$(EMACS) -Q --batch --eval "(progn (require 'ob-tangle) (org-babel-tangle-file \"./init.org\" \"./init.el\" \"emacs-lisp\"))"
+	@$(EMACS) --batch -Q -f batch-byte-compile init.el 2>&1 | grep -E -v 'Warning|https://github.com/emacs-evil/evil-collection/issues/60'
 
 .PHONY: help
 help: ## Display this help screen
