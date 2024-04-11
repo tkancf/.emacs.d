@@ -11,8 +11,7 @@ orgファイルから設定を生成して利用します。
 
 - init.org
   - 更新する際は基本的にこのファイルを更新します。
-
-* Initialize
+* Header
 
 #+BEGIN_SRC emacs-lisp :results none
   ;; init.el --- My init.el -*- lexical-binding: t -*-
@@ -106,14 +105,15 @@ xは何度も押してると貧弱な薬指が痛くなるので入れ替える
   (define-key key-translation-map (kbd "C-x") (kbd "C-j"))
 #+END_SRC
 
-*** scratchバッファ(lisp-interaction-mode)では、C-<Enter>でEmacs lispを実行
+*** scratchバッファでは、C-<Enter>でEmacs lispを実行
+
+scratchバッファというか、lisp-interaction-modeで有効化する
 
 #+BEGIN_SRC emacs-lisp :results none
   (defun my-lisp-interaction-mode-hook ()
     (local-set-key (kbd "C-<return>") 'eval-print-last-sexp))
   (add-hook 'lisp-interaction-mode-hook 'my-lisp-interaction-mode-hook)
 #+END_SRC
-
 
 *** s-jにM-xの割当
 
@@ -189,7 +189,8 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
 *** corfu
 
 補完用フロントエンド
-[[https://github.com/minad/corfu][github.com/minad/corfu]]
+
+[[https://github.com/minad/corfu][GitHub - minad/corfu: :desert_island: corfu.el - COmpletion in Region FUnction]]
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package corfu
@@ -212,7 +213,6 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
 *** cape
 
 corfu向けに補完候補を提供するパッケージ
-[[https://github.com/minad/cape][github.com/minad/cape]]
 
 - cape-abbrev：完全な省略形（add-global-abbrev、add-mode-abbrev）。
 - cape-dabbrev: 現在のバッファからの完全なワード。dabbrev-capfEmacs 29も参照してください。
@@ -247,8 +247,9 @@ corfu向けに補完候補を提供するパッケージ
 
 *** vertico
 
-[[https://github.com/minad/vertico][github.com/minad/vertico]]
 M-xとか、C-j C-fでのファイル検索とかミニバッファでの操作がVimのUniteとかTelescopeみたいになる
+[[https://github.com/minad/vertico][
+GitHub - minad/vertico: :dizzy: vertico.el - VERTical Interactive COmpletion]]
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package vertico
@@ -344,9 +345,22 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
     (setq evil-want-keybinding nil)
     :config
     (evil-mode 1)
+    ;; カーソルの色と形を変更
     (setq evil-normal-state-cursor '(box "#EFEBEB"))
     (setq evil-insert-state-cursor '(bar "#EFEBEB"))
     (setq evil-default-cursor '(hbar "#7355AE"))
+    ;; 単語境界設定
+    ;; _を単語の一部として扱う
+    (modify-syntax-entry ?_ "w" (standard-syntax-table))
+    ;; ?を単語の一部として扱う
+    (modify-syntax-entry ?? "w" (standard-syntax-table))
+    ;; -を単語の一部として扱う
+    (modify-syntax-entry ?- "w" (standard-syntax-table))
+    ;; 検索
+    (setq evil-search-module 'evil-search)
+    ;; org-captureでは、デフォルトインサートステートにする
+    (evil-set-initial-state 'org-capture-mode 'insert)
+    ;; キーマップ
     (with-eval-after-load 'evil-maps
       ;; :と;をスワップ
       (define-key evil-motion-state-map ";" 'evil-ex)
@@ -375,7 +389,24 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
       (define-key evil-insert-state-map (kbd "C-b") 'nil)
       (define-key evil-insert-state-map (kbd "C-k") 'nil)
       (define-key evil-insert-state-map (kbd "C-r") 'nil)
-      ))
+
+      ;; Super-↔️↕️でウィンドウ移動
+      (with-eval-after-load 'org-agenda
+        (global-set-key (kbd "s-<left>") 'evil-window-left)
+        (global-set-key (kbd "s-<right>") 'evil-window-right)))
+    ;; visualステートの*で選択文字列を検索
+    (defun my/evil-visualstar-begin-search (beg end type)
+      "Search for the visually selected text and exit visual mode."
+      (interactive "r\np")
+      (let ((selection (buffer-substring-no-properties beg end)))
+        (setq evil-ex-search-pattern (evil-ex-make-search-pattern selection))
+        (evil-ex-search-activate-highlight evil-ex-search-pattern)
+        (evil-ex-search-next))
+      ;; Exit visual mode and return to normal mode
+      (evil-normal-state))
+
+    (define-key evil-visual-state-map (kbd "*") 'my/evil-visualstar-begin-search)
+    )
 #+END_SRC
 
 *** evil-collection
@@ -401,7 +432,7 @@ vim-surroundみたいな動きを可能にする
 
 *** evil-org
 
-参考: [[https://github.com/Somelauw/evil-org-mode][github.com/Somelauw/evil-org-mode]]
+参考: [[https://github.com/Somelauw/evil-org-mode][GitHub - Somelauw/evil-org-mode: Supplemental evil-mode keybindings to emacs org-mode]]
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package evil-org
@@ -476,7 +507,7 @@ projectile
     ("C-c l" . org-stored-links))
 #+END_SRC
 
-*** org-roam
+*** org-roam: roam-research like
 
 org-roamの設定
 
@@ -505,12 +536,24 @@ org-roamの設定
              :unnarrowed t))))
 #+END_SRC
 
-*** org-modern
+*** org-modern: org-modeをおしゃれに表示
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package org-modern
     :ensure t
     :hook (org-mode . org-modern-mode))
+#+END_SRC
+
+*** org-web-tools 
+
+[[https://github.com/alphapapa/org-web-tools][GitHub - alphapapa/org-web-tools: View, capture, and archive Web pages in Org-mode]]
+
+#+BEGIN_SRC emacs-lisp :results	none
+  (use-package org-web-tools
+  :ensure t ; org-web-tools を自動的にインストール
+  :after org
+  :config
+  (global-set-key (kbd "C-c i l") 'org-web-tools-insert-link-for-url))
 #+END_SRC
 
 *** org-preview-html: orgファイルのプレビュー
@@ -586,8 +629,10 @@ GitHub Flavored Markdownをエクスポートするためのパッケージ
     (define-key s-e-prefix (kbd "c") 'elscreen-create)
     (define-key s-e-prefix (kbd "n") 'elscreen-next)
     (define-key s-e-prefix (kbd "p") 'elscreen-previous)
+    (global-set-key (kbd "C-<tab>") 'elscreen-next)
+    (global-set-key (kbd "C-S-<tab>") 'elscreen-previous)
     (define-key s-e-prefix (kbd "k") 'elscreen-kill)
-    (define-key s-e-prefix (kbd "K") 'elscreen-kill-screen-and-buffers)
+    (define-key s-e-prefix (kbd ",") 'elscreen-screen-nickname)
     (define-key s-e-prefix (kbd "0") 'elscreen-goto-0)
     (define-key s-e-prefix (kbd "1") 'elscreen-goto-1)
     (define-key s-e-prefix (kbd "2") 'elscreen-goto-2)
@@ -622,6 +667,19 @@ cmigemoはhomebrewでインストールできた。\\
     (migemo-init))
 #+END_SRC
 
+** gptel: AI Chat
+
+#+BEGIN_SRC emacs-lisp :results	none
+  (use-package gptel
+    :ensure t
+    :config
+    (setq gptel-api-key
+          (auth-source-pick-first-password
+           :host "api.openai.com"))
+    (setq gptel-model "gpt-4")
+    (setq gptel-default-mode 'org-mode))
+#+END_SRC
+
 * function
 
 ** お気に入りのコマンドだけ一覧する
@@ -644,7 +702,7 @@ cmigemoはhomebrewでインストールできた。\\
   (global-set-key (kbd "s-n") 'my/execute-fav-command)
 #+END_SRC
 
-* provide
+* Footer
 
 #+BEGIN_SRC emacs-lisp :results none
   (provide 'init)
