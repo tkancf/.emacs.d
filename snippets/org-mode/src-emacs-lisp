@@ -2,6 +2,6 @@
 # name: src-emacs-lisp
 # key: <se
 # --
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :results	none
   $0
 #+END_SRC
