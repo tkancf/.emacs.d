@@ -481,19 +481,28 @@ vim-surroundみたいな動きを可能にする
     (evil-org-agenda-set-keys))
 #+END_SRC
 
+*** evil-multiedit
+
+#+BEGIN_SRC emacs-lisp :results	none
+  (use-package evil-multiedit
+    :ensure t
+    :config
+    (evil-multiedit-default-keybinds))
+#+END_SRC
+
 ** yasnippet: スニペット
 
 yasnippetが定番らしい\\
 スニペット自体は ~/.emacs.d/snippets/ 配下で設定する
 
 #+BEGIN_SRC emacs-lisp :results none
-  (use-package yasnippet
-    :ensure t
-    :init
-    (yas-global-mode 1)
-    :config
-    (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
-    (yas-reload-all))
+   (use-package yasnippet
+     :ensure t
+     :init
+     (yas-global-mode 1)
+     :config
+     (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
+     (yas-reload-all))
 #+END_SRC
 
 ** projectile: プロジェクト管理
