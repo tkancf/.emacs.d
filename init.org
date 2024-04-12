@@ -1,4 +1,5 @@
-* 概要
+* Introduction
+** 概要
 
 tkancfのEmacsのconfigファイル\\
 orgファイルから設定を生成する。
@@ -19,6 +20,15 @@ orgファイルから設定を生成する。
   - 更新する際は基本的にこのファイルを更新する
 - snippets/
   - yasnippetというパッケージで利用するスニペットの管理用ディレクトリ
+
+** 設定方針
+
+- テキスト編集はevil-modeに頼る
+  - Vimmerなので、Vim likeキーバインドがないと無力
+  - evil-modeでVimを再現しようとはしない
+- GUIのEmacs利用のみを想定する
+  - superキーを多様する
+- なるべく左手小指の負担を減らす
 
 * Header
 
@@ -159,7 +169,7 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
   (global-set-key (kbd "s-k") 'insert-asterisk)
 #+END_SRC
 
-* package
+* Package
 ** use-package: パッケージ管理
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -724,7 +734,7 @@ undoの履歴をtreeで表示できる。Emacsのundoがよく分からなかっ
     :bind (("C-x u" . undo-tree-visualize))
     )
 #+END_SRC
-* function
+* Function
 ** お気に入りのコマンドだけ一覧する
 
 - ~my/fav-commands~ に好きなコマンドを追加する
