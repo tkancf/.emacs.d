@@ -137,7 +137,8 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
 #+END_SRC
 
 * package
-** use-package
+** 基本的なパッケージ
+*** use-package
 
 #+BEGIN_SRC emacs-lisp :results none
   (eval-and-compile
@@ -151,7 +152,7 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
       (package-install 'use-package)))
 #+END_SRC
 
-** Theme
+*** Theme
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package doom-themes
@@ -173,7 +174,7 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
     (doom-themes-org-config))
 #+END_SRC
 
-** whitch-key
+*** whitch-key
 
 キーボードショートカットのヘルプを表示してくれる
 
@@ -327,15 +328,12 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
 
 *** Evil
 
-**** こだわりポイントメモ
-
-- EscでのEmacsステートからの脱出
-  - Vimに近い感覚で、とりあえずEsc押せばOKを実現できる
-- Super-oでのトグル
-  - デフォルトのC-zは小指が壊れるかと思った
-  - ノーマルモードでm押してEmacsステートとかも設定してたけど、どこからでもトグル出来るって感覚のほうが覚えやすかった
-
-**** 設定
+- こだわりポイントメモ
+  - EscでのEmacsステートからの脱出
+    - Vimに近い感覚で、とりあえずEsc押せばOKを実現できる
+  - Super-oでのトグル
+    - デフォルトのC-zは小指が壊れるかと思った
+    - ノーマルモードでm押してEmacsステートとかも設定してたけど、どこからでもトグル出来るって感覚のほうが覚えやすかった
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package evil
@@ -358,8 +356,6 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
     (modify-syntax-entry ?- "w" (standard-syntax-table))
     ;; 検索
     (setq evil-search-module 'evil-search)
-    ;; org-captureでは、デフォルトインサートステートにする
-    (evil-set-initial-state 'org-capture-mode 'insert)
     ;; キーマップ
     (with-eval-after-load 'evil-maps
       ;; :と;をスワップ
@@ -410,6 +406,8 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
 #+END_SRC
 
 *** evil-collection
+
+[[https://github.com/emacs-evil/evil-collection][GitHub - emacs-evil/evil-collection: A set of keybindings for evil-mode]]
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package evil-collection
@@ -484,27 +482,39 @@ projectile
     (org-log-done 'time)
     (org-md-export-with-toc nil)
     :config
-    ;; org-captureのテンプレート
-    (custom-set-variables
-     '(org-capture-templates
-       `(
-         ;; よく使うものに絵文字つけとく
-         ("t" "☑Todo" entry (file+headline ,(concat org-directory "todo.org") "Todo")
-          "* TODO %?\n SCHEDULED: %t\n")
-         ("m" "📝Memo" entry (file+headline ,(concat org-directory "memo.org") "Memo")
-          "* %?\n")
-
-         ("n" "Memo with Link" entry (file+headline ,(concat org-directory "memo.org") "Memo")
-          "* %?\nEntered on %U\n  %i\n  %a")
-         ("u" "Todo with Link" entry (file+headline ,(concat org-directory "todo.org") "Todo")
-          "* TODO %?\n  %i\n  %a")
-         )))
     ;; org-agendaのファイル
-    (setq org-agenda-files (directory-files-recursively (expand-file-name org-directory) "\\.org$"))
+    (defvar my/org-agenda-files `(,(concat org-directory "")
+                                  ,(concat org-directory "/project")
+                                  ,(concat org-directory "/fleeting")))
+
+    (setq org-agenda-files my/org-agenda-files)
+    (defun my/update-org-agenda-files ()
+      (interactive)
+      (setq org-agenda-files my/org-agenda-files))
     :bind
     ("C-c c" . org-capture)
     ("C-c a" . org-agenda)
-    ("C-c l" . org-stored-links))
+    ("C-c l" . org-id-store-link))
+#+END_SRC
+
+*** org-capture
+
+#+BEGIN_SRC emacs-lisp :results	none
+  ;; org-captureのテンプレート
+  (use-package org-capture
+    :config
+    (setq org-capture-templates `(
+                                  ;; よく使うものに絵文字つけとく
+                                  ("t" "☑Todo" entry (file+headline ,(concat org-directory "todo.org") "Todo")
+                                   "* TODO %?\n SCHEDULED: %t\n")
+                                  ("m" "📝Memo" entry (file+headline ,(concat org-directory "memo.org") "Memo")
+                                   "* %?\n")
+
+                                  ("n" "Memo with Link" entry (file+headline ,(concat org-directory "memo.org") "Memo")
+                                   "* %?\nEntered on %U\n  %i\n  %a")
+                                  ("u" "Todo with Link" entry (file+headline ,(concat org-directory "todo.org") "Todo")
+                                   "* TODO %?\n  %i\n  %a")
+                                  )))
 #+END_SRC
 
 *** org-roam: roam-research like

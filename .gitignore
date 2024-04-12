@@ -16,3 +16,5 @@ index.md
 .emacs.desktop
 *.html
 init.el
+transient
+diary
