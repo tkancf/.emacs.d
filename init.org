@@ -763,49 +763,6 @@ undoの履歴をtreeで表示できる。Emacsのundoがよく分からなかっ
       (call-interactively (intern command))))
   (global-set-key (kbd "s-n") 'my/execute-fav-command)
 #+END_SRC
-** 選択範囲編集用バッファ
-
-選択範囲テスト
-
-#+BEGIN_SRC emacs-lisp :results	none
-  (defun my/confirm-edit ()
-    "Confirm the edit and replace the original selection."
-    (interactive)
-    (let ((edited-text (buffer-string))
-          (original-buffer (marker-buffer my/original-marker))
-          (original-pos (marker-position my/original-marker)))
-      (kill-buffer)
-      (with-current-buffer original-buffer
-        (goto-char original-pos)
-        (if (use-region-p)
-            (delete-region (region-beginning) (region-end)))
-        (insert edited-text)
-        (set-marker my/original-marker nil))))
-
-  (defun my/cancel-edit ()
-    "Cancel the edit and close the temporary buffer."
-    (interactive)
-    (kill-buffer)
-    (with-current-buffer (marker-buffer my/original-marker))
-    (set-marker my/original-marker nil))
-
-  (defun my/edit-selection-in-new-buffer ()
-    "Edit the current selection in a new buffer, and allow confirm or cancel."
-    (interactive)
-    (let ((original-buffer (current-buffer))
-          (selection (buffer-substring (region-beginning) (region-end)))
-          (original-marker (copy-marker (region-beginning) t)))
-      (when (use-region-p)
-        (let ((temp-buffer (generate-new-buffer "*edit-selection*")))
-          (switch-to-buffer temp-buffer)
-          (insert selection)
-          (setq-local my/original-marker original-marker)
-          (local-set-key (kbd "C-c C-c") 'my/confirm-edit)
-          (local-set-key (kbd "C-c C-k") 'my/cancel-edit)
-          (message "Edit the text. Press 'C-c C-c' to confirm or 'C-c C-k' to cancel.")))))
-
-  (global-set-key (kbd "C-c e") 'my/edit-selection-in-new-buffer)
-#+END_SRC
 
 * Footer
 
@@ -818,6 +775,3 @@ undoの履歴をtreeで表示できる。Emacsのundoがよく分からなかっ
 
   ;;; init.el ends here
 #+END_SRC
-
-選択範囲1
-選択範囲2
