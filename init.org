@@ -1,17 +1,28 @@
 * 概要
 
-Emacsのconfigファイルです。\\
-orgファイルから設定を生成して利用します。
+tkancfのEmacsのconfigファイル\\
+orgファイルから設定を生成する。
+
+- Repository
+  - https://github.com/tkancf/tkancf.com
+- blog
+  - https://tkancf.com
 
 ** 利用方法
 
-~make build~ すると ~init.org~ から ~init.el~ が生成され、その後init.elがコンパイルされる
+~make build~ すると ~init.org~ から ~init.el~ が生成されて、 ~init.el~ のコンパイルが実行される。\\
+部分的にorgファイルを更新したときは、 ~C-c C-c~ で一部実行可能。
 
 ** 全体のファイル構成
 
-- init.org
-  - 更新する際は基本的にこのファイルを更新します。
+    - init.org
+      - 更新する際は基本的にこのファイルを更新する
+    - snippets/
+      - yasnippetというパッケージで利用するスニペットの管理用ディレクトリ
+
 * Header
+
+意味はよくわかってないが、よく書いてるのを見かけるので一応書いておく。
 
 #+BEGIN_SRC emacs-lisp :results none
   ;; init.el --- My init.el -*- lexical-binding: t -*-
@@ -21,7 +32,8 @@ orgファイルから設定を生成して利用します。
 * Basic
 ** 余計な情報を表示しない
 
-ツールバー (Emacsの右上に出てくる保存とかのアイコン)を削除
+デフォルトだと、GUI上にツールバー (Emacsの右上に出てくる保存とかのアイコン)が出てくる。\\
+不要なのでツールバーは削除
 
 #+BEGIN_SRC emacs-lisp :results none
   (push '(tool-bar-lines . 0) default-frame-alist)
@@ -29,13 +41,16 @@ orgファイルから設定を生成して利用します。
 
 ** スタートアップメッセージ非表示
 
-スタート画面にアイコンとか別にいらないので削除
+スタート画面にアイコンとか別にいらないので削除\\
+起動時に scratchバッファから開始になる
 
 #+BEGIN_SRC emacs-lisp :results none
   (setq inhibit-startup-message t)
 #+END_SRC
 
-** タブでのインデントを\tからスペースに変更
+** タブでのインデント
+
+インデントをタブ文字からスペースに変更
 
 #+BEGIN_SRC emacs-lisp :results none
   (setq indent-tabs-mode nil)
@@ -51,11 +66,13 @@ orgファイルから設定を生成して利用します。
 
 ** フォント
 
+Cicaフォントを利用する
+
 #+BEGIN_SRC emacs-lisp :results none
   ;; Cicaフォントの設定
   (set-face-attribute 'default nil
                       :family "Cica"
-                      :height 180) ; フォントの大きさは好みで調整してください
+                      :height 180)
 
   ;; 日本語文字にもCicaフォントを使用
   (set-fontset-font t 'japanese-jisx0208 (font-spec :family "Cica"))
@@ -88,12 +105,18 @@ orgファイルから設定を生成して利用します。
 ** Keymap
 *** カーソル位置から行頭まで削除する
 
-#+BEGIN_SRC emacs-lisp :results none
-  (defun delete-to-beginning-of-line ()
-    (interactive)
-    (kill-region (line-beginning-position) (point)))
+~C-u~ でカーソル位置から行頭まで削除する\\
+カーソルが先頭にあるときは、改行を削除する
 
-  (global-set-key (kbd "C-u") 'delete-to-beginning-of-line)
+#+BEGIN_SRC emacs-lisp :results none
+  (defun my/delete-to-beginning-of-line ()
+    (interactive)
+    (if (bolp)  ; bolp は point が行の先頭にあるかを確認する
+        (if (not (bobp))  ; bobp は point がバッファの先頭にあるかを確認する
+            (delete-char -1))  ; バッファの先頭でなければ、前の行の改行を削除する
+      (kill-region (line-beginning-position) (point))))  ; そうでなければ、行の先頭から現在位置までを削除する
+
+  (global-set-key (kbd "C-u") 'my/delete-to-beginning-of-line)
 #+END_SRC
 
 *** C-j, C-xのスワップ
