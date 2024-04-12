@@ -539,6 +539,10 @@ projectile
     (defun my/update-org-agenda-files ()
       (interactive)
       (setq org-agenda-files my/org-agenda-files))
+
+    ;; org-archiveの設定
+    (setq org-archive-location (concat (file-name-as-directory org-directory) "archive/%s_archive::"))
+
     :bind
     ("C-c c" . org-capture)
     ("C-c a" . org-agenda)
