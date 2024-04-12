@@ -15,10 +15,10 @@ orgファイルから設定を生成する。
 
 ** 全体のファイル構成
 
-    - init.org
-      - 更新する際は基本的にこのファイルを更新する
-    - snippets/
-      - yasnippetというパッケージで利用するスニペットの管理用ディレクトリ
+- init.org
+  - 更新する際は基本的にこのファイルを更新する
+- snippets/
+  - yasnippetというパッケージで利用するスニペットの管理用ディレクトリ
 
 * Header
 
@@ -102,8 +102,8 @@ Cicaフォントを利用する
   (setq auto-save-default nil)
 #+END_SRC
 
-** Keymap
-*** カーソル位置から行頭まで削除する
+* Keymap
+** カーソル位置から行頭まで削除する
 
 ~C-u~ でカーソル位置から行頭まで削除する\\
 カーソルが先頭にあるときは、改行を削除する
@@ -119,7 +119,7 @@ Cicaフォントを利用する
   (global-set-key (kbd "C-u") 'my/delete-to-beginning-of-line)
 #+END_SRC
 
-*** C-j, C-xのスワップ
+** C-j, C-xのスワップ
 
 xは何度も押してると貧弱な薬指が痛くなるので入れ替える
 
@@ -128,7 +128,7 @@ xは何度も押してると貧弱な薬指が痛くなるので入れ替える
   (define-key key-translation-map (kbd "C-x") (kbd "C-j"))
 #+END_SRC
 
-*** scratchバッファでは、C-<Enter>でEmacs lispを実行
+** scratchバッファでは、C-<Enter>でEmacs lispを実行
 
 scratchバッファというか、lisp-interaction-modeで有効化する
 
@@ -138,7 +138,7 @@ scratchバッファというか、lisp-interaction-modeで有効化する
   (add-hook 'lisp-interaction-mode-hook 'my-lisp-interaction-mode-hook)
 #+END_SRC
 
-*** s-jにM-xの割当
+** s-jにM-xの割当
 
 xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役割をもたせる
 
@@ -146,7 +146,7 @@ xは何度も押してると貧弱な薬指が痛くなるのでs-jに同じ役�
   (define-key key-translation-map (kbd "s-j") (kbd "M-x"))
 #+END_SRC
 
-*** s-kに*の割当
+** s-kに*の割当
 
 org-modeで*を連打してるとShiftキーのせいで左手の小指が痛くなるので
 
@@ -160,8 +160,7 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
 #+END_SRC
 
 * package
-** 基本的なパッケージ
-*** use-package
+** use-package: パッケージ管理
 
 #+BEGIN_SRC emacs-lisp :results none
   (eval-and-compile
@@ -175,7 +174,7 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
       (package-install 'use-package)))
 #+END_SRC
 
-*** Theme
+** Theme: カラーテーマ
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package doom-themes
@@ -197,7 +196,7 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
     (doom-themes-org-config))
 #+END_SRC
 
-*** whitch-key
+** whitch-key: ショートカットのヘルプ
 
 キーボードショートカットのヘルプを表示してくれる
 
@@ -209,7 +208,7 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
     (which-key-mode 1))
 #+END_SRC
 
-** 補完(テキスト入力)
+** 補完: corfu, cape
 *** corfu
 
 補完用フロントエンド
@@ -265,15 +264,14 @@ corfu向けに補完候補を提供するパッケージ
     )
 #+END_SRC
 
-** ミニバッファ
+** ミニバッファ: vertico, consult, orderless, marginalia, recentf
 
 参考: [[https://joppot.info/posts/2d8a8c1d-6d7f-4cf8-a51a-0f7e5c7e3c80][helmからモダンなvertico + consult + recentf + orderless + marginaliaに移行してみた]]
 
 *** vertico
 
 M-xとか、C-j C-fでのファイル検索とかミニバッファでの操作がVimのUniteとかTelescopeみたいになる
-[[https://github.com/minad/vertico][
-GitHub - minad/vertico: :dizzy: vertico.el - VERTical Interactive COmpletion]]
+[[https://github.com/minad/vertico][GitHub - minad/vertico: :dizzy: vertico.el - VERTical Interactive COmpletion]]
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package vertico
@@ -322,8 +320,14 @@ consultで一覧表示した時に、コマンドの説明文とかが表示さ�
           recentf-exclude '(".recentf" "^/ssh:") ; recentfの履歴に含ませないファイルリスト
           recentf-auto-cleanup 'never)           ; recentfの履歴を削除しない
 
+    (defun my/silent-recentf-save-list ()
+      "Save the recent list without any messages."
+      (interactive)
+      (let ((inhibit-message t))
+        (recentf-save-list)))
+
     (setq recentf-auto-save-timer
-          (run-with-idle-timer 30 t 'recentf-save-list)) ; バッファを開いて30秒以上したら履歴に登録
+          (run-with-idle-timer 30 t 'my/silent-recentf-save-list)) ; バッファを開いて30秒以上したら履歴に登録
     (recentf-mode 1))
 #+END_SRC
 
@@ -341,7 +345,7 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
            ("C-c o" . consult-outline)))    ;; アウトライン
 #+END_SRC
 
-** Evil
+** Evil: Vim likeキーバインド
 
 - Vim likeキーバインド
   - Meowも試したけどテキストオブジェクトが使えなかったりで合わなかった
@@ -467,7 +471,7 @@ vim-surroundみたいな動きを可能にする
     (evil-org-agenda-set-keys))
 #+END_SRC
 
-** スニペット
+** yasnippet: スニペット
 
 yasnippetが定番らしい\\
 スニペット自体は ~/.emacs.d/snippets/ 配下で設定する
@@ -482,7 +486,7 @@ yasnippetが定番らしい\\
     (yas-reload-all))
 #+END_SRC
 
-** プロジェクト管理
+** projectile: プロジェクト管理
 
 projectile
 
@@ -497,7 +501,7 @@ projectile
 #+END_SRC
 
 ** org-mode
-*** org-modeの基本設定
+*** org-mode 基本設定
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package org
@@ -544,8 +548,6 @@ projectile
 
 *** org-roam: roam-research like
 
-org-roamの設定
-
 #+BEGIN_SRC emacs-lisp :results none
   (use-package org-roam
     :ensure t
@@ -585,10 +587,10 @@ org-roamの設定
 
 #+BEGIN_SRC emacs-lisp :results	none
   (use-package org-web-tools
-  :ensure t ; org-web-tools を自動的にインストール
-  :after org
-  :config
-  (global-set-key (kbd "C-c i l") 'org-web-tools-insert-link-for-url))
+    :ensure t ; org-web-tools を自動的にインストール
+    :after org
+    :config
+    (global-set-key (kbd "C-c i l") 'org-web-tools-insert-link-for-url))
 #+END_SRC
 
 *** org-preview-html: orgファイルのプレビュー
@@ -598,20 +600,12 @@ org-roamの設定
     :ensure t)
 #+END_SRC
 
-** ox-gfm
+*** ox-gfm: GitHub Flavored Markdownをエクスポート
 
 GitHub Flavored Markdownをエクスポートするためのパッケージ
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package ox-gfm
-    :ensure t
-    :after org)
-#+END_SRC
-
-** ox-hugo
-
-#+BEGIN_SRC emacs-lisp :results none
-  (use-package ox-hugo
     :ensure t
     :after org)
 #+END_SRC
@@ -686,7 +680,7 @@ cmigemoはhomebrewでインストールできた。\\
 インストールコマンドは下記
 
 #+BEGIN_SRC bash
-  brew install cmigemo
+  # brew install cmigemo
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -717,6 +711,8 @@ cmigemoはhomebrewでインストールできた。\\
 
 ** undo-tree
 
+undoの履歴をtreeで表示できる。Emacsのundoがよく分からなかったので便利
+
 #+BEGIN_SRC emacs-lisp :results	none
   (use-package undo-tree
     :ensure t
@@ -729,7 +725,6 @@ cmigemoはhomebrewでインストールできた。\\
     )
 #+END_SRC
 * function
-
 ** お気に入りのコマンドだけ一覧する
 
 - ~my/fav-commands~ に好きなコマンドを追加する
