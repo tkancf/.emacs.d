@@ -430,18 +430,22 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
         (global-set-key (kbd "s-<left>") 'evil-window-left)
         (global-set-key (kbd "s-<right>") 'evil-window-right)))
     ;; visualステートの*で選択文字列を検索
-    (defun my/evil-visualstar-begin-search (beg end type)
-      "Search for the visually selected text and exit visual mode."
-      (interactive "r\np")
-      (let ((selection (buffer-substring-no-properties beg end)))
-        (setq evil-ex-search-pattern (evil-ex-make-search-pattern selection))
-        (evil-ex-search-activate-highlight evil-ex-search-pattern)
-        (evil-ex-search-next))
-      ;; Exit visual mode and return to normal mode
-      (evil-normal-state))
 
-    (define-key evil-visual-state-map (kbd "*") 'my/evil-visualstar-begin-search)
-    )
+    (defun my/evil-visual-search-forward ()
+      "Search forward for the visually selected text."
+      (interactive)
+      (let ((selection (buffer-substring-no-properties (region-beginning) (region-end))))
+        (deactivate-mark)  ; Optionally deactivate the mark
+        (evil-search selection t t)))
+
+    (defun my/evil-visual-search-backward ()
+      "Search backward for the visually selected text."
+      (interactive)
+      (let ((selection (buffer-substring-no-properties (region-beginning) (region-end))))
+        (deactivate-mark)  ; Optionally deactivate the mark
+        (evil-search selection nil t)))
+    (define-key evil-visual-state-map (kbd "*") 'my/evil-visual-search-forward)
+    (define-key evil-visual-state-map (kbd "#") 'my/evil-visual-search-backward))
 #+END_SRC
 
 *** evil-collection
@@ -780,6 +784,11 @@ undoの履歴をtreeで表示できる。Emacsのundoがよく分からなかっ
     (let ((command (completing-read "Command: " my/fav-commands nil t)))
       (call-interactively (intern command))))
   (global-set-key (kbd "s-n") 'my/execute-fav-command)
+#+END_SRC
+
+** Evil asterisk 拡張
+
+#+BEGIN_SRC emacs-lisp :results	none
 #+END_SRC
 
 * Footer
