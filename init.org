@@ -575,8 +575,7 @@ projectile
     :bind
     ("C-c c" . org-capture)
     ("C-c a" . org-agenda)
-    ("C-c l" . org-store-link)
-    ("C-c g" . org-id-get-create))
+    ("C-c l" . org-store-link))
 #+END_SRC
 
 *** org-id
@@ -584,6 +583,8 @@ projectile
 #+BEGIN_SRC emacs-lisp :results	none
   (use-package org-id
     :after org  ; org-modeがロードされた後に読み込む
+    :bind
+    ("C-c n g" . org-id-get-create)
     :config
     (setq org-id-link-to-org-use-id t)  ; org-idを利用してリンクを生成する設定
     (setq org-id-locations-file (expand-file-name ".org-id-locations" org-directory)))  ; IDの位置情報ファイルの設定
@@ -629,8 +630,8 @@ projectile
             ("l" "Literature(文献)" plain "%?"
              :target (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+filetags: :literature-note:\n")
              :unnarrowed t)
-            ("p" "Permanent(記事)" plain "%?"
-             :target (file+head "permanent/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+filetags: :permanent-note:\n")
+            ("p" "Permanent(メイン)" plain "%?"
+             :target (file+head "roam/%<%Y%m%d%H%M%S>-${slug}.org" "#+TITLE: ${title}\n#+filetags: :permanent-note:\n")
              :unnarrowed t)
             ("b" "Publish(ブログ・Zenn・Qiitaなど)" plain "%?"
              :target (file+head "publish/${slug}.org" "#+TITLE: ${title}\n#+filetags: :publish-note:\n")
