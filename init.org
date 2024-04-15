@@ -548,10 +548,21 @@ projectile
     (setq org-archive-location (concat (file-name-as-directory org-directory) "archive/%s_archive::"))
 
     ;; org-agendaの設定
+    (defun my-skip-repeat-org ()
+      "Skip entries from the repeat.org file located in org-directory."
+      (let ((repeat-org-file (expand-file-name "repeat.org" org-directory)))
+        (save-excursion
+          (let ((subtree-end (save-excursion (org-end-of-subtree t))))
+            (if (string= (buffer-file-name) repeat-org-file)
+                subtree-end
+              nil)))))
+
     (setq org-agenda-custom-commands
           '(("o" "Overview of today and TODOs"
              ((agenda "" ((org-agenda-span 'day)))
-              (todo "TODO" ((org-agenda-overriding-header "Unfinished TODOs:")))))))
+              (todo "TODO"
+                    ((org-agenda-overriding-header "Unfinished TODOs:")
+                     (org-agenda-skip-function 'my-skip-repeat-org)))))))
 
     :bind
     ("C-c c" . org-capture)
@@ -559,6 +570,7 @@ projectile
     ("C-c l" . org-store-link)
     ("C-c g" . org-id-get-create))
       #+END_SRC
+
 *** org-id
 
 #+BEGIN_SRC emacs-lisp :results	none
