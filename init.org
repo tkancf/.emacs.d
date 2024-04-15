@@ -381,9 +381,9 @@ Consult-bufferが便利で、カスタマイズすることで、最近開いた
     :config
     (evil-mode 1)
     ;; カーソルの色と形を変更
-    (setq evil-normal-state-cursor '(box "#EFEBEB"))
-    (setq evil-insert-state-cursor '(bar "#EFEBEB"))
-    (setq evil-default-cursor '(hbar "#7355AE"))
+    (setq evil-normal-state-cursor '(box "#000000"))
+    (setq evil-insert-state-cursor '(bar "#000000"))
+    (setq evil-default-cursor '(hbar "#000000"))
     ;; 単語境界設定
     ;; _を単語の一部として扱う
     (modify-syntax-entry ?_ "w" (standard-syntax-table))
@@ -569,7 +569,7 @@ projectile
     ("C-c a" . org-agenda)
     ("C-c l" . org-store-link)
     ("C-c g" . org-id-get-create))
-      #+END_SRC
+    #+END_SRC
 
 *** org-id
 
@@ -666,8 +666,7 @@ projectile
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package org-modern
-    :ensure t
-    :hook (org-mode . org-modern-mode))
+    :ensure t)
 #+END_SRC
 
 *** org-web-tools 
