@@ -500,13 +500,13 @@ yasnippetが定番らしい\\
 スニペット自体は ~/.emacs.d/snippets/ 配下で設定する
 
 #+BEGIN_SRC emacs-lisp :results none
-   (use-package yasnippet
-     :ensure t
-     :init
-     (yas-global-mode 1)
-     :config
-     (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
-     (yas-reload-all))
+  (use-package yasnippet
+    :ensure t
+    :init
+    (yas-global-mode 1)
+    :config
+    (add-to-list 'yas-snippet-dirs "~/.emacs.d/snippets")
+    (yas-reload-all))
 #+END_SRC
 
 ** projectile: プロジェクト管理
@@ -569,7 +569,7 @@ projectile
     ("C-c a" . org-agenda)
     ("C-c l" . org-store-link)
     ("C-c g" . org-id-get-create))
-    #+END_SRC
+#+END_SRC
 
 *** org-id
 
@@ -628,6 +628,7 @@ projectile
              :target (file+head "publish/${slug}.org" "#+TITLE: ${title}\n#+filetags: :publish-note:\n")
              :unnarrowed t)))
     )
+
 #+END_SRC
 
 *** consult-org-roam
