@@ -74,6 +74,14 @@ orgファイルから設定を生成する。
   (setq ring-bell-function 'ignore)
 #+END_SRC
 
+** 行の折り返し
+
+折り返して表示をデフォルトにする
+
+#+BEGIN_SRC emacs-lisp :results	none
+  (global-visual-line-mode 1)
+#+END_SRC
+
 ** フォント
 
 Cicaフォントを利用する
