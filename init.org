@@ -813,6 +813,18 @@ undoの履歴をtreeで表示できる。Emacsのundoがよく分からなかっ
     :bind (("C-x u" . undo-tree-visualize))
     )
 #+END_SRC
+
+** hiwin: アクティブウィンドウを分かりやすくする
+
+#+BEGIN_SRC emacs-lisp :results	none
+  (use-package hiwin
+    :ensure t
+    :config
+    (hiwin-activate)
+    (custom-set-faces
+     '(hiwin-face ((t (:background "lavender" :foreground "gray50"))))))
+#+END_SRC
+
 * Function
 ** お気に入りのコマンドだけ一覧する
 
