@@ -665,9 +665,14 @@ projectile
 
 *** org-modern: org-modeをおしゃれに表示
 
+デフォルトでOFFにしておき、 ~org-modern-mode~ コマンドでToggleする
+
 #+BEGIN_SRC emacs-lisp :results none
   (use-package org-modern
-    :ensure t)
+    :after org
+    :commands org-modern-mode
+    :init
+    (setq org-modern-mode nil))
 #+END_SRC
 
 *** org-web-tools 
