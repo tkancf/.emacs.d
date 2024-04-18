@@ -240,7 +240,7 @@ org-modeで*を連打してるとShiftキーのせいで左手の小指が痛く
     ((corfu-auto t)
      (corfu-auto-delay 0.1)
      (corfu-cycle t)
-     (corfu-auto-prefix 2) ;; 補完候補を2文字で出す
+     (corfu-auto-prefix 3) ;; 補完候補を3文字で出す
      (corfu-on-exact-match nil))
     :config
     ;; 基本設定
@@ -637,7 +637,6 @@ projectile
              :target (file+head "publish/${slug}.org" "#+TITLE: ${title}\n#+filetags: :publish-note:\n")
              :unnarrowed t)))
     )
-
 #+END_SRC
 
 *** consult-org-roam
