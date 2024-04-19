@@ -572,6 +572,9 @@ projectile
                     ((org-agenda-overriding-header "Unfinished TODOs:")
                      (org-agenda-skip-function 'my-skip-repeat-org)))))))
 
+    ;; org-refileの対象をorg-agendaと一緒にする
+    (setq org-refile-targets '((org-agenda-files :maxlevel . 3)))
+
     :bind
     ("C-c c" . org-capture)
     ("C-c a" . org-agenda)
@@ -619,6 +622,7 @@ projectile
     :bind (("C-c n n" . org-roam-capture)
            ("C-c n f" . org-roam-node-find)
            ("C-c n i" . org-roam-node-insert)
+           ("C-c n a" . org-roam-tag-add)
            )
     :config
     (org-roam-setup)
